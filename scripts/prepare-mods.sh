@@ -9,6 +9,9 @@ CONFIG_FILE="config/servers.conf"
 
 ensure_dir() {
   local path="$1"
+  if [ -d "$path" ]; then
+    return 0
+  fi
   if [ -e "$path" ] && [ ! -d "$path" ]; then
     echo "ERROR: $path exists but is not a directory."
     echo "Remove or rename ./$path, then run again."
