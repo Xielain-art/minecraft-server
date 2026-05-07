@@ -20,9 +20,6 @@ island1 = "island1:25565"
 island2 = "island2:25565"
 island3 = "island3:25565"
 island4 = "island4:25565"
-
-try = [
-  "hub"
-]
+try = ["hub"]
 
 [forced-hosts]
