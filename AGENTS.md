@@ -141,6 +141,31 @@ The `data/` directory may be created locally at runtime, but it must not be stor
 
 ## Mods
 
+## Backend Server Metadata Source of Truth
+
+`config/servers.conf` is the source of truth for backend server metadata used by scripts.
+
+Scripts must not hardcode backend server names (`hub`, `island1`, etc.). They must iterate over `config/servers.conf`, skip empty lines, and skip comment lines starting with `#`.
+
+File format:
+
+```text
+name|container|service|host|port|worldborder_center_x|worldborder_center_z|worldborder_diameter|pregeneration_radius|pregeneration_enabled
+```
+
+Fields:
+
+* `name` — project server name.
+* `container` — Docker container name.
+* `service` — docker-compose service name.
+* `host` — internal Docker DNS hostname used by Velocity.
+* `port` — backend Minecraft port (usually `25565`).
+* `worldborder_center_x` — worldborder center X.
+* `worldborder_center_z` — worldborder center Z.
+* `worldborder_diameter` — worldborder diameter.
+* `pregeneration_radius` — Chunky pregeneration radius.
+* `pregeneration_enabled` — `true` or `false`.
+
 ### Shared Mods
 
 Shared mods for all servers are stored here:
@@ -187,7 +212,7 @@ shared/mods + servers/island4/mods → data/island4/mods
 The `scripts/prepare-mods.sh` file must:
 
 * use `set -e`;
-* work with servers `hub`, `island1`, `island2`, `island3`, `island4`;
+* read backend server names from `config/servers.conf`;
 * create `data/$SERVER/mods`;
 * remove old `.jar` files from `data/$SERVER/mods`;
 * copy `.jar` files from `shared/mods`;
@@ -201,9 +226,8 @@ Example logic:
 #!/bin/bash
 set -e
 
-SERVERS=("hub" "island1" "island2" "island3" "island4")
-
-for SERVER in "${SERVERS[@]}"; do
+while IFS='|' read -r SERVER _; do
+  [[ -z "$SERVER" || "$SERVER" =~ ^[[:space:]]*# ]] && continue
   echo "Preparing mods for $SERVER..."
 
   mkdir -p "data/$SERVER/mods"
@@ -215,6 +239,37 @@ done
 
 echo "Mods prepared."
 ```
+
+## Mods vs Plugins
+
+* Velocity plugins go to `velocity/plugins/`.
+* Fabric mods go to `shared/mods/` or `servers/<server-name>/mods/`.
+* `Velocity Web API` is a Velocity plugin.
+* A future launcher auth plugin is a Velocity plugin.
+* `Fabric API`, `Chunky`, `Lithium`, `FerriteCore`, `Krypton`, `ModernFix` are Fabric mods.
+* LuckPerms has separate builds:
+* LuckPerms Velocity plugin goes to `velocity/plugins/`.
+* LuckPerms Fabric mod goes to `shared/mods/` or `servers/<server-name>/mods/`.
+* Do not put Fabric mods into `velocity/plugins/`.
+* Do not put Velocity plugins into `shared/mods/`.
+
+## Worldborder and Pregeneration
+
+* `scripts/setup-worldborders.sh` must configure worldborder for all servers in `config/servers.conf`.
+* `worldborder set` uses diameter, not radius.
+* `scripts/pregenerate-worlds.sh` must start Chunky only for rows with `pregeneration_enabled=true`.
+* Chunky pregeneration uses `pregeneration_radius`.
+* Chunky must be installed as a Fabric mod in `shared/mods/` before pregeneration.
+* Do not restart containers or delete runtime data in pregeneration scripts.
+
+## Adding New Backend Servers
+
+When adding a new backend server (`forest`, `desert`, `swamp`, `volcano`, `skylands`, etc.), update all of:
+
+* `docker-compose.yml` (new service).
+* `velocity/velocity.toml` (new backend entry).
+* `servers/<name>/` (at least `mods/`, `config/`, and `server.properties`).
+* `config/servers.conf` (new metadata row).
 
 ## Docker Compose Requirements
 

@@ -34,6 +34,55 @@
 
 Перед запуском скрипт `scripts/prepare-mods.sh` собирает итоговые моды в runtime-папки `data/<server>/mods`.
 
+## Конфигурация серверов
+
+Backend-сервера описываются в `config/servers.conf`. Скрипты не хардкодят `island1/island2/island3/island4` и работают по данным из этого файла.
+
+Формат строки:
+
+`name|container|service|host|port|worldborder_center_x|worldborder_center_z|worldborder_diameter|pregeneration_radius|pregeneration_enabled`
+
+Пример:
+
+`forest|mc-forest|forest|forest|25565|0|0|10000|5000|true`
+
+Чтобы добавить новый backend-сервер:
+1. Добавить `service` в `docker-compose.yml`.
+2. Добавить backend в `velocity/velocity.toml`.
+3. Создать `servers/<server-name>/mods/` и `servers/<server-name>/config/`.
+4. Добавить строку в `config/servers.conf`.
+5. Запустить `./scripts/restart.sh`.
+
+## Mods vs Plugins
+
+- Velocity plugins размещаются в `velocity/plugins/`.
+- Fabric mods размещаются в `shared/mods/` или `servers/<server-name>/mods/`.
+- Velocity Web API — это Velocity plugin.
+- Будущий launcher auth plugin — это Velocity plugin.
+- Fabric API, Chunky, Lithium, FerriteCore, Krypton, ModernFix — это Fabric mods.
+- LuckPerms имеет разные сборки:
+- LuckPerms Velocity plugin идет в `velocity/plugins/`.
+- LuckPerms Fabric mod идет в `shared/mods/` или `servers/<server-name>/mods/`.
+- Нельзя класть Fabric mods в `velocity/plugins/`.
+- Нельзя класть Velocity plugins в `shared/mods/`.
+
+## Worldborder and pregeneration
+
+- Worldborder ограничивает размер мира.
+- `worldborder set` использует диаметр, не радиус.
+- Chunky pregeneration использует радиус.
+- Значения берутся из `config/servers.conf`.
+- Запуск:
+
+```bash
+./scripts/setup-worldborders.sh
+./scripts/pregenerate-worlds.sh
+```
+
+- Перед pregeneration нужно вручную положить Chunky в `shared/mods/`.
+- На слабом VPS не запускайте pregeneration для многих больших миров одновременно.
+- Чтобы отключить pregeneration для сервера, установите `pregeneration_enabled=false`.
+
 ## Запуск на новой VPS
 
 ```bash
