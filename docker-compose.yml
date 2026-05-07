@@ -25,6 +25,8 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-hub
     restart: unless-stopped
+    ports:
+      - "8123:8123"
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -48,6 +50,8 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-island1
     restart: unless-stopped
+    ports:
+      - "8124:8123"
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -71,6 +75,8 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-island2
     restart: unless-stopped
+    ports:
+      - "8125:8123"
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -94,6 +100,8 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-island3
     restart: unless-stopped
+    ports:
+      - "8126:8123"
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -117,6 +125,8 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-island4
     restart: unless-stopped
+    ports:
+      - "8127:8123"
     environment:
       - EULA=TRUE
       - TYPE=FABRIC

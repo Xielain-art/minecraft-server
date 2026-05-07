@@ -10,7 +10,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
   exit 1
 fi
 
-while IFS='|' read -r name container service host port center_x center_z diameter preg_radius preg_enabled; do
+while IFS='|' read -r name container service host port center_x center_z diameter preg_radius preg_enabled gen_map; do
   name="${name//$'\r'/}"
   container="${container//$'\r'/}"
   center_x="${center_x//$'\r'/}"
