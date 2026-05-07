@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     ports:
       - "${VELOCITY_PORT}:25577"
+      - "25576:25576"
     environment:
       - TYPE=VELOCITY
       - MEMORY=${VELOCITY_MEMORY}
