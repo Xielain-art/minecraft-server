@@ -9,6 +9,9 @@ if [ ! -f "$CONFIG_FILE" ]; then
 fi
 
 while IFS='|' read -r name container service host port center_x center_z diameter preg_radius preg_enabled; do
+  name="${name//$'\r'/}"
+  name="$(echo "$name" | xargs)"
+
   if [ -z "$name" ] || [[ "$name" =~ ^[[:space:]]*# ]]; then
     continue
   fi

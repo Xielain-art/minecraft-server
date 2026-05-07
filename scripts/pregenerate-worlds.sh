@@ -11,6 +11,20 @@ if [ ! -f "$CONFIG_FILE" ]; then
 fi
 
 while IFS='|' read -r name container service host port center_x center_z diameter preg_radius preg_enabled; do
+  name="${name//$'\r'/}"
+  container="${container//$'\r'/}"
+  center_x="${center_x//$'\r'/}"
+  center_z="${center_z//$'\r'/}"
+  preg_radius="${preg_radius//$'\r'/}"
+  preg_enabled="${preg_enabled//$'\r'/}"
+
+  name="$(echo "$name" | xargs)"
+  container="$(echo "$container" | xargs)"
+  center_x="$(echo "$center_x" | xargs)"
+  center_z="$(echo "$center_z" | xargs)"
+  preg_radius="$(echo "$preg_radius" | xargs)"
+  preg_enabled="$(echo "$preg_enabled" | xargs)"
+
   if [ -z "$name" ] || [[ "$name" =~ ^[[:space:]]*# ]]; then
     continue
   fi
