@@ -5,7 +5,8 @@ services:
     restart: unless-stopped
     ports:
       - "${VELOCITY_PORT}:25577"
-      - "25576:25576"
+      # Optional debug only (prefer access via Caddy -> velocity:25576):
+      # - "25576:25576"
     environment:
       - TYPE=VELOCITY
       - MEMORY=${VELOCITY_MEMORY}
@@ -25,8 +26,6 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-hub
     restart: unless-stopped
-    ports:
-      - "8123:8123"
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -50,8 +49,6 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-island1
     restart: unless-stopped
-    ports:
-      - "8124:8123"
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -75,8 +72,6 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-island2
     restart: unless-stopped
-    ports:
-      - "8125:8123"
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -100,8 +95,6 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-island3
     restart: unless-stopped
-    ports:
-      - "8126:8123"
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -125,8 +118,6 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-island4
     restart: unless-stopped
-    ports:
-      - "8127:8123"
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -146,6 +137,59 @@ services:
     networks:
       - mc-network
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: mc-portainer
+    restart: unless-stopped
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    # Optional debug only (do not enable by default):
+    # ports:
+    #   - "9443:9443"
+    networks:
+      - mc-network
+
+  caddy:
+    image: caddy:2
+    container_name: mc-caddy
+    restart: unless-stopped
+    environment:
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN}
+      - PANEL_DOMAIN=${PANEL_DOMAIN}
+      - STATUS_DOMAIN=${STATUS_DOMAIN}
+      - MAP1_DOMAIN=${MAP1_DOMAIN}
+      - MAP2_DOMAIN=${MAP2_DOMAIN}
+      - MAP3_DOMAIN=${MAP3_DOMAIN}
+      - MAP4_DOMAIN=${MAP4_DOMAIN}
+      - MAP1_PORT=${MAP1_PORT}
+      - MAP2_PORT=${MAP2_PORT}
+      - MAP3_PORT=${MAP3_PORT}
+      - MAP4_PORT=${MAP4_PORT}
+      - VELOCITY_WEB_API_PORT=${VELOCITY_WEB_API_PORT}
+      - PANEL_BASIC_AUTH_USER=${PANEL_BASIC_AUTH_USER}
+      - PANEL_BASIC_AUTH_PASSWORD_HASH=${PANEL_BASIC_AUTH_PASSWORD_HASH}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - mc-network
+    depends_on:
+      - velocity
+      - portainer
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
 networks:
   mc-network:
     driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
+  portainer_data:

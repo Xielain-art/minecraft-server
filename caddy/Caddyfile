@@ -1,0 +1,80 @@
+# Caddy reverse proxy for Gerbarium Minecraft Network
+# Domains/ports/basic-auth are loaded from .env via docker-compose.yml.
+# Minecraft itself is NOT proxied here.
+# Players connect to ${PUBLIC_DOMAIN}:25565 or play.${PUBLIC_DOMAIN}:25565.
+
+# Portainer Docker panel.
+# Preferred access method.
+{$PANEL_DOMAIN} {
+    basic_auth {
+        {$PANEL_BASIC_AUTH_USER} {$PANEL_BASIC_AUTH_PASSWORD_HASH}
+    }
+    reverse_proxy portainer:9443 {
+        transport http {
+            tls_insecure_skip_verify
+        }
+    }
+}
+
+# Velocity Web API.
+{$STATUS_DOMAIN} {
+    reverse_proxy velocity:{$VELOCITY_WEB_API_PORT}
+}
+
+# Map services.
+# If maps run on Docker host, host.docker.internal works with extra_hosts.
+# If maps run inside Docker services, replace host.docker.internal with service names.
+# If maps run inside Minecraft containers, use actual backend hostnames/ports (for example hub:8153).
+{$MAP1_DOMAIN} {
+    reverse_proxy host.docker.internal:{$MAP1_PORT}
+}
+
+{$MAP2_DOMAIN} {
+    reverse_proxy host.docker.internal:{$MAP2_PORT}
+}
+
+{$MAP3_DOMAIN} {
+    reverse_proxy host.docker.internal:{$MAP3_PORT}
+}
+
+{$MAP4_DOMAIN} {
+    reverse_proxy host.docker.internal:{$MAP4_PORT}
+}
+
+# Path-based fallback for single DuckDNS domain.
+# Use this if subdomains are not configured.
+# Note: Portainer may not work perfectly behind /panel prefix. Prefer subdomain.
+{$PUBLIC_DOMAIN} {
+    handle_path /panel/* {
+        basic_auth {
+            {$PANEL_BASIC_AUTH_USER} {$PANEL_BASIC_AUTH_PASSWORD_HASH}
+        }
+        reverse_proxy portainer:9443 {
+            transport http {
+                tls_insecure_skip_verify
+            }
+        }
+    }
+
+    handle_path /status/* {
+        reverse_proxy velocity:{$VELOCITY_WEB_API_PORT}
+    }
+
+    handle_path /maps/map1/* {
+        reverse_proxy host.docker.internal:{$MAP1_PORT}
+    }
+
+    handle_path /maps/map2/* {
+        reverse_proxy host.docker.internal:{$MAP2_PORT}
+    }
+
+    handle_path /maps/map3/* {
+        reverse_proxy host.docker.internal:{$MAP3_PORT}
+    }
+
+    handle_path /maps/map4/* {
+        reverse_proxy host.docker.internal:{$MAP4_PORT}
+    }
+
+    respond "Gerbarium Minecraft Network is running." 200
+}

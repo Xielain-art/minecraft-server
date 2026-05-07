@@ -10,6 +10,7 @@
 
 - `velocity` — единственная публичная точка входа.
 - Backend-сервера (`hub`, `island1..4`) работают только во внутренней Docker-сети.
+- `caddy` — reverse proxy только для HTTP/HTTPS веб-сервисов (не для Minecraft TCP).
 - В MVP вход игроков всегда через `hub` (`try = ["hub"]`).
 
 ## Что такое Hub
@@ -91,7 +92,7 @@ cd minecraft-network
 cp .env.example .env
 cp velocity/forwarding.secret.example velocity/forwarding.secret
 nano velocity/forwarding.secret
-chmod +x scripts/*.sh
+chmod +x scripts/*.sh scripts/caddy/*.sh
 ./scripts/start.sh
 ```
 
@@ -110,10 +111,139 @@ git pull
 ./scripts/restart.sh
 ```
 
+## Reverse proxy через Caddy
+
+- Caddy проксирует только веб-сервисы (HTTP/HTTPS).
+- Minecraft-трафик Velocity остается прямым TCP `25565`.
+- Velocity Web API доступен через Caddy (`status`).
+- Portainer доступен через Caddy (`panel`).
+- Для `panel` включена Caddy Basic Auth (логин/пароль задаются в `.env`).
+- Map-сервисы `8153-8156` доступны через Caddy (`map1..map4` или `/maps/...`).
+- Не открывайте `8153-8156`, `9443`, `25576` публично, кроме временной отладки.
+
+Команды:
+
+```bash
+docker compose up -d caddy
+docker logs -f mc-caddy
+docker compose ps
+```
+
+Проверка на VPS:
+
+```bash
+curl http://localhost
+curl https://status.gerbarium.duckdns.org/health
+curl https://gerbarium.duckdns.org/status/health
+```
+
+Если HTTPS не работает:
+- проверьте, что DNS указывает на IP VPS;
+- проверьте, что открыты порты `80` и `443`;
+- проверьте логи Caddy:
+
+```bash
+docker logs mc-caddy --tail=100
+```
+
+## DuckDNS домен
+
+1. Создайте DuckDNS-домен, например `gerbarium.duckdns.org`.
+2. Укажите публичный IP вашего VPS.
+3. Если настроены поддомены, используйте:
+   - `https://panel.gerbarium.duckdns.org`
+   - `https://status.gerbarium.duckdns.org`
+   - `https://map1.gerbarium.duckdns.org`
+   - `https://map2.gerbarium.duckdns.org`
+   - `https://map3.gerbarium.duckdns.org`
+   - `https://map4.gerbarium.duckdns.org`
+4. Если в вашей схеме доступен только root-домен, используйте fallback пути:
+   - `https://gerbarium.duckdns.org/panel`
+   - `https://gerbarium.duckdns.org/status`
+   - `https://gerbarium.duckdns.org/maps/map1`
+   - `https://gerbarium.duckdns.org/maps/map2`
+   - `https://gerbarium.duckdns.org/maps/map3`
+   - `https://gerbarium.duckdns.org/maps/map4`
+5. Подключение Minecraft остается:
+   - `gerbarium.duckdns.org:25565`
+   - или `play.gerbarium.duckdns.org:25565`, если создан `play`-поддомен.
+6. Caddy автоматически запросит HTTPS-сертификаты при открытых `80/443` и корректном DNS.
+7. `caddy/Caddyfile` использует переменные из `.env` (`PUBLIC_DOMAIN`, `PANEL_DOMAIN`, `STATUS_DOMAIN`, `MAP*_DOMAIN`, `MAP*_PORT`).
+
+## Панель управления Docker: Portainer
+
+- Portainer — веб-панель управления Docker.
+- Что можно делать:
+  - смотреть контейнеры;
+  - перезапускать `velocity/hub/island` сервисы;
+  - смотреть логи;
+  - проверять volumes и сети;
+  - открывать консоль контейнера.
+- Это не Minecraft-специфичная панель.
+- Она не заменяет workflow Git + Docker Compose.
+- Git остается source of truth.
+
+Доступ:
+- Предпочтительно: `https://panel.<your-duckdns-domain>`
+- Fallback: `https://<your-duckdns-domain>/panel`
+- Поддомен предпочтительнее, т.к. Portainer под path-prefix может работать нестабильно.
+- Вход в panel защищен Caddy Basic Auth, креды задаются в `.env`.
+
+Первичная настройка:
+1. Запустите сервисы: `docker compose up -d`
+2. Откройте: `https://panel.<your-duckdns-domain>`
+3. Создайте admin-пользователя.
+4. Выберите local Docker environment.
+
+Безопасность:
+- Используйте сильный пароль.
+- Не открывайте `9443` напрямую, кроме отладки.
+- Предпочитайте доступ через Caddy HTTPS.
+- Для production ограничьте доступ по IP или добавьте дополнительную аутентификацию.
+- `PANEL_BASIC_AUTH_PASSWORD_HASH` храните в виде hash (не plaintext).
+
+Генерация hash для Caddy Basic Auth:
+
+```bash
+./scripts/caddy/generate-password-hash.sh 'YOUR_STRONG_PASSWORD' paneladmin
+```
+
+Скрипт принимает:
+- 1-й аргумент: plaintext пароль (обязателен);
+- 2-й аргумент: username (опционально, по умолчанию `paneladmin`).
+
+Скрипт сам выводит готовые строки для `.env`:
+
+```env
+PANEL_BASIC_AUTH_USER=paneladmin
+PANEL_BASIC_AUTH_PASSWORD_HASH='$2a$14$...'
+```
+
+Временный прямой debug-доступ (если Caddy еще не работает):
+
+```yaml
+portainer:
+  ports:
+    - "9443:9443"
+```
+
+Потом откройте `https://SERVER_IP:9443`, завершите отладку и уберите прямой порт.
+
 ## Порты и безопасность
 
-- Открывать наружу только **TCP 25565**.
-- Backend-порты наружу не открывать.
+- Открыть публично:
+  - `TCP 22` (SSH)
+  - `TCP 80` (Caddy HTTP / Let's Encrypt)
+  - `TCP 443` (Caddy HTTPS)
+  - `TCP 25565` (Minecraft Velocity)
+- Опционально только для отладки:
+  - `TCP 25576` (direct Velocity Web API)
+  - `TCP 9443` (direct Portainer)
+  - `TCP 8153-8156` (direct maps)
+- Не открывать по умолчанию:
+  - backend Minecraft порты;
+  - `RCON 25575`;
+  - `9443`, `25576`, `8153-8156`.
 - `data/` не хранится в Git: там миры, логи, playerdata и runtime-данные.
 - В Git хранится только `velocity/forwarding.secret.example`; реальный `velocity/forwarding.secret` создается на сервере.
 

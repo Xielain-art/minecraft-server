@@ -59,6 +59,8 @@ Use ready-made Docker images:
 
 * `itzg/bungeecord` for Velocity.
 * `itzg/minecraft-server:java17` for Fabric servers.
+* `caddy:2` for HTTP/HTTPS reverse proxy.
+* `portainer/portainer-ce` for optional Docker operations panel.
 
 All services must be in one Docker network:
 
@@ -67,6 +69,35 @@ networks:
   mc-network:
     driver: bridge
 ```
+
+### Reverse Proxy Policy
+
+* Caddy is used only for HTTP/HTTPS services.
+* Minecraft Java traffic must stay on Velocity TCP `25565`.
+* Do not use Caddy as normal HTTP proxy for Minecraft protocol traffic.
+* Velocity Web API (`25576`), Portainer (`9443`), and map web ports should be reached via Caddy.
+* DuckDNS values and web route ports must be configured in `.env` and passed to Caddy via container environment.
+* Panel Basic Auth credentials must be configured in `.env`:
+  * `PANEL_BASIC_AUTH_USER`
+  * `PANEL_BASIC_AUTH_PASSWORD_HASH` (hash only, not plaintext).
+
+### Portainer Policy
+
+* Portainer is optional and operational only.
+* Portainer tasks: logs, restart, inspect, shell.
+* Git + Docker Compose remains source of truth.
+* Do not expose `9443` publicly by default.
+* Access Portainer through Caddy (`panel.<domain>` preferred).
+
+### Map Web Services Policy
+
+* Reserved map web ports:
+  * `8153` (map1)
+  * `8154` (map2)
+  * `8155` (map3)
+  * `8156` (map4)
+* Prefer proxy through Caddy.
+* Do not expose map ports publicly by default.
 
 Velocity must depend on the backend servers:
 
@@ -359,6 +390,32 @@ For `island2`, `island3`, and `island4`, replace the service names and MOTD valu
 
 Important: backend servers must not define `ports`.
 
+### Caddy Service
+
+`docker-compose.yml` must include Caddy with:
+
+* published ports `80:80` and `443:443`;
+* `./caddy/Caddyfile:/etc/caddy/Caddyfile:ro`;
+* named volumes `caddy_data` and `caddy_config`;
+* dependency on `velocity` and `portainer`;
+* `extra_hosts` entry:
+  * `host.docker.internal:host-gateway`
+
+### Portainer Service
+
+`docker-compose.yml` must include Portainer CE with:
+
+* Docker socket mount `/var/run/docker.sock:/var/run/docker.sock`;
+* named volume `portainer_data`;
+* no public `ports` by default.
+
+Optional temporary debug mapping may be documented as commented example only:
+
+```yaml
+ports:
+  - "9443:9443"
+```
+
 ## .env
 
 The `.env` and `.env.example` files must contain:
@@ -593,6 +650,23 @@ docker-compose.yml
 README.md
 AGENTS.md
 ```
+
+Do not commit Caddy runtime/cert data as repo folders; use Docker named volumes (`caddy_data`, `caddy_config`).
+
+## Firewall Policy
+
+Publicly open only:
+
+* `22/tcp` (SSH)
+* `80/tcp` (HTTP, ACME challenge)
+* `443/tcp` (HTTPS)
+* `25565/tcp` (Minecraft Velocity)
+
+Internal/debug-only (not public by default):
+
+* `9443/tcp` (Portainer direct)
+* `25576/tcp` (Velocity Web API direct)
+* `8153-8156/tcp` (map direct)
 
 ## README.md Requirements
 
