@@ -1,0 +1,139 @@
+services:
+  velocity:
+    image: itzg/bungeecord
+    container_name: mc-velocity
+    restart: unless-stopped
+    ports:
+      - "${VELOCITY_PORT}:25577"
+    environment:
+      - TYPE=VELOCITY
+      - MEMORY=${VELOCITY_MEMORY}
+    volumes:
+      - ./velocity:/server
+    networks:
+      - mc-network
+    depends_on:
+      - hub
+      - island1
+      - island2
+      - island3
+      - island4
+
+  hub:
+    image: itzg/minecraft-server:java17
+    container_name: mc-hub
+    restart: unless-stopped
+    environment:
+      - EULA=TRUE
+      - TYPE=FABRIC
+      - VERSION=${MC_VERSION}
+      - MEMORY=${HUB_MEMORY}
+      - ONLINE_MODE=FALSE
+      - MOTD=Hub
+      - VIEW_DISTANCE=${HUB_VIEW_DISTANCE}
+      - SIMULATION_DISTANCE=${HUB_SIMULATION_DISTANCE}
+      - MAX_PLAYERS=${MAX_PLAYERS}
+      - ENABLE_COMMAND_BLOCK=true
+      - SPAWN_PROTECTION=0
+      - ALLOW_FLIGHT=true
+    volumes:
+      - ./data/hub:/data
+      - ./servers/hub/server.properties:/data/server.properties
+    networks:
+      - mc-network
+
+  island1:
+    image: itzg/minecraft-server:java17
+    container_name: mc-island1
+    restart: unless-stopped
+    environment:
+      - EULA=TRUE
+      - TYPE=FABRIC
+      - VERSION=${MC_VERSION}
+      - MEMORY=${ISLAND_MEMORY}
+      - ONLINE_MODE=FALSE
+      - MOTD=Island 1
+      - VIEW_DISTANCE=${VIEW_DISTANCE}
+      - SIMULATION_DISTANCE=${SIMULATION_DISTANCE}
+      - MAX_PLAYERS=${MAX_PLAYERS}
+      - ENABLE_COMMAND_BLOCK=true
+      - SPAWN_PROTECTION=0
+      - ALLOW_FLIGHT=true
+    volumes:
+      - ./data/island1:/data
+      - ./servers/island1/server.properties:/data/server.properties
+    networks:
+      - mc-network
+
+  island2:
+    image: itzg/minecraft-server:java17
+    container_name: mc-island2
+    restart: unless-stopped
+    environment:
+      - EULA=TRUE
+      - TYPE=FABRIC
+      - VERSION=${MC_VERSION}
+      - MEMORY=${ISLAND_MEMORY}
+      - ONLINE_MODE=FALSE
+      - MOTD=Island 2
+      - VIEW_DISTANCE=${VIEW_DISTANCE}
+      - SIMULATION_DISTANCE=${SIMULATION_DISTANCE}
+      - MAX_PLAYERS=${MAX_PLAYERS}
+      - ENABLE_COMMAND_BLOCK=true
+      - SPAWN_PROTECTION=0
+      - ALLOW_FLIGHT=true
+    volumes:
+      - ./data/island2:/data
+      - ./servers/island2/server.properties:/data/server.properties
+    networks:
+      - mc-network
+
+  island3:
+    image: itzg/minecraft-server:java17
+    container_name: mc-island3
+    restart: unless-stopped
+    environment:
+      - EULA=TRUE
+      - TYPE=FABRIC
+      - VERSION=${MC_VERSION}
+      - MEMORY=${ISLAND_MEMORY}
+      - ONLINE_MODE=FALSE
+      - MOTD=Island 3
+      - VIEW_DISTANCE=${VIEW_DISTANCE}
+      - SIMULATION_DISTANCE=${SIMULATION_DISTANCE}
+      - MAX_PLAYERS=${MAX_PLAYERS}
+      - ENABLE_COMMAND_BLOCK=true
+      - SPAWN_PROTECTION=0
+      - ALLOW_FLIGHT=true
+    volumes:
+      - ./data/island3:/data
+      - ./servers/island3/server.properties:/data/server.properties
+    networks:
+      - mc-network
+
+  island4:
+    image: itzg/minecraft-server:java17
+    container_name: mc-island4
+    restart: unless-stopped
+    environment:
+      - EULA=TRUE
+      - TYPE=FABRIC
+      - VERSION=${MC_VERSION}
+      - MEMORY=${ISLAND_MEMORY}
+      - ONLINE_MODE=FALSE
+      - MOTD=Island 4
+      - VIEW_DISTANCE=${VIEW_DISTANCE}
+      - SIMULATION_DISTANCE=${SIMULATION_DISTANCE}
+      - MAX_PLAYERS=${MAX_PLAYERS}
+      - ENABLE_COMMAND_BLOCK=true
+      - SPAWN_PROTECTION=0
+      - ALLOW_FLIGHT=true
+    volumes:
+      - ./data/island4:/data
+      - ./servers/island4/server.properties:/data/server.properties
+    networks:
+      - mc-network
+
+networks:
+  mc-network:
+    driver: bridge

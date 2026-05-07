@@ -1,0 +1,25 @@
+config-version = "2.7"
+bind = "0.0.0.0:25577"
+motd = "Minecraft Islands Network"
+show-max-players = 100
+online-mode = true
+force-key-authentication = true
+prevent-client-proxy-connections = false
+player-info-forwarding-mode = "none"
+forwarding-secret-file = "forwarding.secret"
+announce-forge = false
+kick-existing-players = false
+ping-passthrough = "DISABLED"
+
+[servers]
+hub = "hub:25565"
+island1 = "island1:25565"
+island2 = "island2:25565"
+island3 = "island3:25565"
+island4 = "island4:25565"
+
+try = [
+  "hub"
+]
+
+[forced-hosts]
