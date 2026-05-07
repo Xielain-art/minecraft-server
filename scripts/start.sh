@@ -11,5 +11,11 @@ if [ ! -f velocity/forwarding.secret ]; then
   echo "Created velocity/forwarding.secret from example"
 fi
 
+if [ -e "data" ] && [ ! -d "data" ]; then
+  echo "ERROR: data exists but is not a directory."
+  echo "Remove or rename ./data file, then run again."
+  exit 1
+fi
+
 ./scripts/prepare-mods.sh
 docker compose up -d
