@@ -15,5 +15,12 @@ if [ ! -f velocity/forwarding.secret ]; then
   echo "Created velocity/forwarding.secret from example"
 fi
 
-./scripts/world/prepare-mods.sh
+if [ -x ./scripts/world/prepare-mods.sh ]; then
+  ./scripts/world/prepare-mods.sh
+elif [ -x ./scripts/prepare-mods.sh ]; then
+  ./scripts/prepare-mods.sh
+else
+  echo "ERROR: prepare-mods.sh not found. Expected ./scripts/world/prepare-mods.sh or ./scripts/prepare-mods.sh"
+  exit 1
+fi
 docker compose -f docker-compose.yml -f docker-compose.local.yml up -d

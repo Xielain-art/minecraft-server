@@ -30,5 +30,12 @@ fi
 
 ensure_dir "data"
 
-./scripts/world/prepare-mods.sh
+if [ -x ./scripts/world/prepare-mods.sh ]; then
+  ./scripts/world/prepare-mods.sh
+elif [ -x ./scripts/prepare-mods.sh ]; then
+  ./scripts/prepare-mods.sh
+else
+  echo "ERROR: prepare-mods.sh not found. Expected ./scripts/world/prepare-mods.sh or ./scripts/prepare-mods.sh"
+  exit 1
+fi
 docker compose up -d
