@@ -14,6 +14,12 @@ docker compose -f docker-compose.yml -f docker-compose.local.yml ps
 docker compose -f docker-compose.yml -f docker-compose.local.yml down
 ```
 
+Жесткий локальный перезапуск (down/up + пересборка mods):
+
+```bash
+./scripts/hard-restart-local.sh
+```
+
 ## Локальные адреса
 
 - `localhost:25565` -> вход игроков (Velocity)

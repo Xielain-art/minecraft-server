@@ -8,6 +8,7 @@ cd minecraft-network
 cp .env.example .env
 cp velocity/forwarding.secret.example velocity/forwarding.secret
 nano velocity/forwarding.secret
+sed -i 's/\r$//' scripts/*.sh
 chmod +x scripts/*.sh scripts/caddy/*.sh
 ./scripts/start.sh
 docker compose ps
