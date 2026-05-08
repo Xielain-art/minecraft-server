@@ -1,4 +1,4 @@
-# AGENTS.md
+﻿# AGENTS.md
 
 ## Agent Role
 
@@ -12,22 +12,22 @@ Create and maintain a Minecraft network repository:
 
 ```text
 Player
-  ↓
+  â†“
 Velocity :25565
-  ↓
+  â†“
 Hub
-  ↓
+  â†“
 Island 1 / Island 2 / Island 3 / Island 4
 ```
 
 The network consists of:
 
-* `velocity` — the proxy server and the only public entry point.
-* `hub` — the starting lobby server where players learn about the project and choose an island.
-* `island1` — the first Fabric island server.
-* `island2` — the second Fabric island server.
-* `island3` — the third Fabric island server.
-* `island4` — the fourth Fabric island server.
+* `velocity` â€” the proxy server and the only public entry point.
+* `hub` â€” the starting lobby server where players learn about the project and choose an island.
+* `island1` â€” the first Fabric island server.
+* `island2` â€” the second Fabric island server.
+* `island3` â€” the third Fabric island server.
+* `island4` â€” the fourth Fabric island server.
 
 Players connect only to Velocity on port `25565`. Backend servers must not expose ports publicly.
 
@@ -111,58 +111,58 @@ depends_on:
 
 ```text
 minecraft-network/
-├─ docker-compose.yml
-├─ .env
-├─ .env.example
-├─ .gitignore
-├─ README.md
-├─ AGENTS.md
-├─ velocity/
-│  ├─ velocity.toml
-│  └─ forwarding.secret.example
-├─ shared/
-│  ├─ mods/
-│  │  └─ .gitkeep
-│  └─ config/
-│     └─ .gitkeep
-├─ servers/
-│  ├─ hub/
-│  │  ├─ mods/
-│  │  │  └─ .gitkeep
-│  │  ├─ config/
-│  │  │  └─ .gitkeep
-│  │  └─ server.properties
-│  ├─ island1/
-│  │  ├─ mods/
-│  │  │  └─ .gitkeep
-│  │  ├─ config/
-│  │  │  └─ .gitkeep
-│  │  └─ server.properties
-│  ├─ island2/
-│  │  ├─ mods/
-│  │  │  └─ .gitkeep
-│  │  ├─ config/
-│  │  │  └─ .gitkeep
-│  │  └─ server.properties
-│  ├─ island3/
-│  │  ├─ mods/
-│  │  │  └─ .gitkeep
-│  │  ├─ config/
-│  │  │  └─ .gitkeep
-│  │  └─ server.properties
-│  └─ island4/
-│     ├─ mods/
-│     │  └─ .gitkeep
-│     ├─ config/
-│     │  └─ .gitkeep
-│     └─ server.properties
-└─ scripts/
-   ├─ prepare-mods.sh
-   ├─ start.sh
-   ├─ stop.sh
-   ├─ restart.sh
-   ├─ logs.sh
-   └─ status.sh
+â”œâ”€ docker-compose.yml
+â”œâ”€ .env
+â”œâ”€ .env.example
+â”œâ”€ .gitignore
+â”œâ”€ README.md
+â”œâ”€ AGENTS.md
+â”œâ”€ velocity/
+â”‚  â”œâ”€ velocity.toml
+â”‚  â””â”€ forwarding.secret.example
+â”œâ”€ shared/
+â”‚  â”œâ”€ mods/
+â”‚  â”‚  â””â”€ .gitkeep
+â”‚  â””â”€ config/
+â”‚     â””â”€ .gitkeep
+â”œâ”€ servers/
+â”‚  â”œâ”€ hub/
+â”‚  â”‚  â”œâ”€ mods/
+â”‚  â”‚  â”‚  â””â”€ .gitkeep
+â”‚  â”‚  â”œâ”€ config/
+â”‚  â”‚  â”‚  â””â”€ .gitkeep
+â”‚  â”‚  â””â”€ server.properties
+â”‚  â”œâ”€ island1/
+â”‚  â”‚  â”œâ”€ mods/
+â”‚  â”‚  â”‚  â””â”€ .gitkeep
+â”‚  â”‚  â”œâ”€ config/
+â”‚  â”‚  â”‚  â””â”€ .gitkeep
+â”‚  â”‚  â””â”€ server.properties
+â”‚  â”œâ”€ island2/
+â”‚  â”‚  â”œâ”€ mods/
+â”‚  â”‚  â”‚  â””â”€ .gitkeep
+â”‚  â”‚  â”œâ”€ config/
+â”‚  â”‚  â”‚  â””â”€ .gitkeep
+â”‚  â”‚  â””â”€ server.properties
+â”‚  â”œâ”€ island3/
+â”‚  â”‚  â”œâ”€ mods/
+â”‚  â”‚  â”‚  â””â”€ .gitkeep
+â”‚  â”‚  â”œâ”€ config/
+â”‚  â”‚  â”‚  â””â”€ .gitkeep
+â”‚  â”‚  â””â”€ server.properties
+â”‚  â””â”€ island4/
+â”‚     â”œâ”€ mods/
+â”‚     â”‚  â””â”€ .gitkeep
+â”‚     â”œâ”€ config/
+â”‚     â”‚  â””â”€ .gitkeep
+â”‚     â””â”€ server.properties
+â””â”€ scripts/
+   â”œâ”€ prepare-mods.sh
+   â”œâ”€ start.sh
+   â”œâ”€ stop.sh
+   â”œâ”€ restart.sh
+   â”œâ”€ logs.sh
+   â””â”€ status.sh
 ```
 
 The `data/` directory may be created locally at runtime, but it must not be stored in Git.
@@ -196,16 +196,16 @@ File format (JSON array of objects):
 
 Fields:
 
-* `name` — project server name.
-* `container` — Docker container name.
-* `service` — docker-compose service name.
-* `host` — internal Docker DNS hostname used by Velocity.
-* `port` — backend Minecraft port (usually `25565`).
-* `worldborder_center_x` — worldborder center X.
-* `worldborder_center_z` — worldborder center Z.
-* `worldborder_diameter` — worldborder diameter.
-* `pregeneration_radius` — Chunky pregeneration radius.
-* `pregeneration_enabled` — `true` or `false`.
+* `name` â€” project server name.
+* `container` â€” Docker container name.
+* `service` â€” docker-compose service name.
+* `host` â€” internal Docker DNS hostname used by Velocity.
+* `port` â€” backend Minecraft port (usually `25565`).
+* `worldborder_center_x` â€” worldborder center X.
+* `worldborder_center_z` â€” worldborder center Z.
+* `worldborder_diameter` â€” worldborder diameter.
+* `pregeneration_radius` â€” Chunky pregeneration radius.
+* `pregeneration_enabled` â€” `true` or `false`.
 
 ### Shared Mods
 
@@ -243,14 +243,14 @@ servers/island4/mods/
 Before startup, the script must assemble the final mod folders:
 
 ```text
-shared/mods + servers/hub/mods     → data/hub/mods
-shared/mods + servers/island1/mods → data/island1/mods
-shared/mods + servers/island2/mods → data/island2/mods
-shared/mods + servers/island3/mods → data/island3/mods
-shared/mods + servers/island4/mods → data/island4/mods
+shared/mods + servers/hub/mods     â†’ data/hub/mods
+shared/mods + servers/island1/mods â†’ data/island1/mods
+shared/mods + servers/island2/mods â†’ data/island2/mods
+shared/mods + servers/island3/mods â†’ data/island3/mods
+shared/mods + servers/island4/mods â†’ data/island4/mods
 ```
 
-The `scripts/world/prepare-mods.sh` file must:
+The `scripts/world-tools/prepare-mods.sh` file must:
 
 * use `set -e`;
 * read backend server names from `config/servers.json`;
@@ -296,9 +296,9 @@ echo "Mods prepared."
 
 ## Worldborder and Pregeneration
 
-* `scripts/world/setup-worldborders.sh` must configure worldborder for all servers in `config/servers.json`.
+* `scripts/world-tools/setup-worldborders.sh` must configure worldborder for all servers in `config/servers.json`.
 * `worldborder set` uses diameter, not radius.
-* `scripts/world/pregenerate-worlds.sh` must start Chunky only for rows with `pregeneration_enabled=true`.
+* `scripts/world-tools/pregenerate-worlds.sh` must start Chunky only for rows with `pregeneration_enabled=true`.
 * Chunky pregeneration uses `pregeneration_radius`.
 * Chunky must be installed as a Fabric mod in `shared/mods/` before pregeneration.
 * Do not restart containers or delete runtime data in pregeneration scripts.
@@ -573,7 +573,7 @@ Must:
 1. use `set -e`;
 2. check for `.env`; if missing, copy `.env.example`;
 3. check for `velocity/forwarding.secret`; if missing, copy `velocity/forwarding.secret.example`;
-4. run `./scripts/world/prepare-mods.sh`;
+4. run `./scripts/world-tools/prepare-mods.sh`;
 5. run `docker compose up -d`.
 
 ### scripts/lifecycle/stop.sh
@@ -591,7 +591,7 @@ docker compose down
 #!/bin/bash
 set -e
 
-./scripts/world/prepare-mods.sh
+./scripts/world-tools/prepare-mods.sh
 docker compose restart
 ```
 
@@ -683,7 +683,7 @@ Internal/debug-only (not public by default):
 README must be written in Russian and explain:
 
 1. What the project is: Velocity + Hub + 4 Fabric 1.20.1 island servers.
-2. Architecture: `Player → Velocity :25565 → hub → island1/island2/island3/island4`.
+2. Architecture: `Player â†’ Velocity :25565 â†’ hub â†’ island1/island2/island3/island4`.
 3. What Hub is: the starting server where the player learns about the project and chooses an island.
 4. Where shared mods are stored: `shared/mods/`.
 5. Where server-specific mods are stored: `servers/SERVER/mods/`.
@@ -741,7 +741,7 @@ Backend servers must not be exposed publicly.
 In the MVP:
 
 ```text
-Player joins → Velocity → Hub
+Player joins â†’ Velocity â†’ Hub
 ```
 
 In the Hub, the player learns about the project and chooses an island.
@@ -750,13 +750,13 @@ Future production behavior may be:
 
 ```text
 Player logs out on island3
-↓
+â†“
 Velocity remembers island3
-↓
+â†“
 Player joins again
-↓
+â†“
 Velocity sends the player to island3
-↓
+â†“
 island3 restores the player position from playerdata
 ```
 
@@ -801,7 +801,7 @@ This `minecraft-server` repository manages server infrastructure.
 - `shared/mods` is preserved as optional manual/emergency override layer.
 - `servers/<server>/mods` is preserved as rare server-specific manual override.
 - Future agents must not remove `shared/mods` or `servers/<server>/mods`.
-- `PACKWIZ_SERVER_MODE=true` means `scripts/world/prepare-mods.sh` must not delete packwiz-managed mods.
+- `PACKWIZ_SERVER_MODE=true` means `scripts/world-tools/prepare-mods.sh` must not delete packwiz-managed mods.
 - `ENABLE_MANUAL_MOD_OVERRIDES=true` allows copying override jars on top without deleting packwiz-managed mods.
 - Do not create separate packwiz packs per island/backend service.
 - Do not use different content mod sets per backend service unless explicitly approved.
@@ -829,3 +829,5 @@ This `minecraft-server` repository manages server infrastructure.
 - Do not use different content mod sets for different backend servers unless explicitly approved.
 - Do not expose repository root through Caddy.
 - If Caddy exists, use it for web services (panel/status/maps), not packwiz hosting.
+
+

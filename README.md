@@ -99,7 +99,7 @@ curl https://xielain-art.github.io/minecraft-server/packs/server/pack.toml
 - Эти каталоги не удаляются
 - Это legacy/manual/override режим
 - При `PACKWIZ_SERVER_MODE=true` и `ENABLE_MANUAL_MOD_OVERRIDES=false`:
-  `scripts/world/prepare-mods.sh` пропускает копирование ручных модов, packwiz остается единственным автоматическим источником
+  `scripts/world-tools/prepare-mods.sh` пропускает копирование ручных модов, packwiz остается единственным автоматическим источником
 - При `PACKWIZ_SERVER_MODE=true` и `ENABLE_MANUAL_MOD_OVERRIDES=true`:
   моды из `shared/mods` и `servers/<server>/mods` копируются поверх packwiz-модов без удаления уже скачанных packwiz `.jar`
 - При `PACKWIZ_SERVER_MODE=false`:
@@ -236,3 +236,5 @@ Public:
 - Минимум ресурсов: `4 vCPU / 16 GB RAM / 50 GB SSD`
 - RAM по умолчанию: Velocity `512m`, Hub `2G`, каждый island `3G`
 - Если RAM мало, уменьшить `ISLAND_MEMORY` до `2G`
+
+

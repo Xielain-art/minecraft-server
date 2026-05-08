@@ -1,41 +1,43 @@
-# Документация проекта
+﻿# Ð”Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð°Ñ†Ð¸Ñ Ð¿Ñ€Ð¾ÐµÐºÑ‚Ð°
 
-## Быстрый выбор
+## Ð‘Ñ‹ÑÑ‚Ñ€Ñ‹Ð¹ Ð²Ñ‹Ð±Ð¾Ñ€
 
-- Локальный запуск: [docs/local.md](/C:/Users/user/test/minecraft-server/docs/local.md)
-- Запуск на VPS: [docs/vps.md](/C:/Users/user/test/minecraft-server/docs/vps.md)
-- Конфиг backend-серверов (`servers.json`): [docs/servers-json.md](/C:/Users/user/test/minecraft-server/docs/servers-json.md)
+- Ð›Ð¾ÐºÐ°Ð»ÑŒÐ½Ñ‹Ð¹ Ð·Ð°Ð¿ÑƒÑÐº: [docs/local.md](/C:/Users/user/test/minecraft-server/docs/local.md)
+- Ð—Ð°Ð¿ÑƒÑÐº Ð½Ð° VPS: [docs/vps.md](/C:/Users/user/test/minecraft-server/docs/vps.md)
+- ÐšÐ¾Ð½Ñ„Ð¸Ð³ backend-ÑÐµÑ€Ð²ÐµÑ€Ð¾Ð² (`servers.json`): [docs/servers-json.md](/C:/Users/user/test/minecraft-server/docs/servers-json.md)
 - Caddy (prod + local): [docs/caddy.md](/C:/Users/user/test/minecraft-server/docs/caddy.md)
 
-## Меню скриптов
+## ÐœÐµÐ½ÑŽ ÑÐºÑ€Ð¸Ð¿Ñ‚Ð¾Ð²
 
-Запуск единого меню:
+Ð—Ð°Ð¿ÑƒÑÐº ÐµÐ´Ð¸Ð½Ð¾Ð³Ð¾ Ð¼ÐµÐ½ÑŽ:
 
 ```bash
 ./scripts/menu.sh
 ```
 
-Логика меню:
-- шаг 1: выбрать папку/категорию (`lifecycle`, `world`, `ops`, `connect`, `caddy`)
-- шаг 2: выбрать скрипт внутри выбранной папки
-- перед запуском можно ввести аргументы; для известных скриптов меню показывает короткий hint по параметрам
+Ð›Ð¾Ð³Ð¸ÐºÐ° Ð¼ÐµÐ½ÑŽ:
+- ÑˆÐ°Ð³ 1: Ð²Ñ‹Ð±Ñ€Ð°Ñ‚ÑŒ Ð¿Ð°Ð¿ÐºÑƒ/ÐºÐ°Ñ‚ÐµÐ³Ð¾Ñ€Ð¸ÑŽ (`lifecycle`, `world`, `ops`, `connect`, `caddy`)
+- ÑˆÐ°Ð³ 2: Ð²Ñ‹Ð±Ñ€Ð°Ñ‚ÑŒ ÑÐºÑ€Ð¸Ð¿Ñ‚ Ð²Ð½ÑƒÑ‚Ñ€Ð¸ Ð²Ñ‹Ð±Ñ€Ð°Ð½Ð½Ð¾Ð¹ Ð¿Ð°Ð¿ÐºÐ¸
+- Ð¿ÐµÑ€ÐµÐ´ Ð·Ð°Ð¿ÑƒÑÐºÐ¾Ð¼ Ð¼Ð¾Ð¶Ð½Ð¾ Ð²Ð²ÐµÑÑ‚Ð¸ Ð°Ñ€Ð³ÑƒÐ¼ÐµÐ½Ñ‚Ñ‹; Ð´Ð»Ñ Ð¸Ð·Ð²ÐµÑÑ‚Ð½Ñ‹Ñ… ÑÐºÑ€Ð¸Ð¿Ñ‚Ð¾Ð² Ð¼ÐµÐ½ÑŽ Ð¿Ð¾ÐºÐ°Ð·Ñ‹Ð²Ð°ÐµÑ‚ ÐºÐ¾Ñ€Ð¾Ñ‚ÐºÐ¸Ð¹ hint Ð¿Ð¾ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð°Ð¼
 
-## Ключевая идея
+## ÐšÐ»ÑŽÑ‡ÐµÐ²Ð°Ñ Ð¸Ð´ÐµÑ
 
-- Один репозиторий для двух режимов:
-- `./scripts/lifecycle/start.sh` -> обычный (VPS/prod-like), `docker-compose.yml`
-- `./scripts/lifecycle/start-local.sh` -> локальный, `docker-compose.yml + docker-compose.local.yml`
+- ÐžÐ´Ð¸Ð½ Ñ€ÐµÐ¿Ð¾Ð·Ð¸Ñ‚Ð¾Ñ€Ð¸Ð¹ Ð´Ð»Ñ Ð´Ð²ÑƒÑ… Ñ€ÐµÐ¶Ð¸Ð¼Ð¾Ð²:
+- `./scripts/lifecycle/start.sh` -> Ð¾Ð±Ñ‹Ñ‡Ð½Ñ‹Ð¹ (VPS/prod-like), `docker-compose.yml`
+- `./scripts/lifecycle/start-local.sh` -> Ð»Ð¾ÐºÐ°Ð»ÑŒÐ½Ñ‹Ð¹, `docker-compose.yml + docker-compose.local.yml`
 
-## Структура scripts
+## Ð¡Ñ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ð° scripts
 
 - `scripts/lifecycle/` -> start/stop/restart/hard-restart
-- `scripts/world/` -> mods, worldborder, pregenerate, dynmap
+- `scripts/world-tools/` -> mods, worldborder, pregenerate, dynmap
 - `scripts/ops/` -> logs/status
-- `scripts/connect/` -> SSH/доступ (постепенно переносим сюда)
-- `scripts/caddy/` -> caddy утилиты
+- `scripts/connect/` -> SSH/Ð´Ð¾ÑÑ‚ÑƒÐ¿ (Ð¿Ð¾ÑÑ‚ÐµÐ¿ÐµÐ½Ð½Ð¾ Ð¿ÐµÑ€ÐµÐ½Ð¾ÑÐ¸Ð¼ ÑÑŽÐ´Ð°)
+- `scripts/caddy/` -> caddy ÑƒÑ‚Ð¸Ð»Ð¸Ñ‚Ñ‹
 
-Примечание:
-- Старые пути в `scripts/*.sh` сохранены как wrapper для совместимости.
+ÐŸÑ€Ð¸Ð¼ÐµÑ‡Ð°Ð½Ð¸Ðµ:
+- Ð¡Ñ‚Ð°Ñ€Ñ‹Ðµ Ð¿ÑƒÑ‚Ð¸ Ð² `scripts/*.sh` ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ñ‹ ÐºÐ°Ðº wrapper Ð´Ð»Ñ ÑÐ¾Ð²Ð¼ÐµÑÑ‚Ð¸Ð¼Ð¾ÑÑ‚Ð¸.
 
-Minecraft-трафик всегда идет напрямую в Velocity на `25565`. Caddy проксирует только веб-сервисы.
+Minecraft-Ñ‚Ñ€Ð°Ñ„Ð¸Ðº Ð²ÑÐµÐ³Ð´Ð° Ð¸Ð´ÐµÑ‚ Ð½Ð°Ð¿Ñ€ÑÐ¼ÑƒÑŽ Ð² Velocity Ð½Ð° `25565`. Caddy Ð¿Ñ€Ð¾ÐºÑÐ¸Ñ€ÑƒÐµÑ‚ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð²ÐµÐ±-ÑÐµÑ€Ð²Ð¸ÑÑ‹.
+
+
 

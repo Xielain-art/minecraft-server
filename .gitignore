@@ -21,3 +21,4 @@ velocity/forwarding.secret
 .idea/
 .vscode/
 !velocity/plugins/*.jar
+.env
