@@ -1,8 +1,4 @@
 services:
-  portainer:
-    ports:
-      - "9443:9443"
-
   caddy:
     ports:
       - "8080:8080"

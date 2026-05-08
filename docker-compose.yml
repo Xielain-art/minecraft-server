@@ -143,7 +143,7 @@ services:
     restart: unless-stopped
     command: -H unix:///var/run/docker.sock
     ports:
-      - "127.0.0.1:9443:9443"
+      - "${PORTAINER_BIND_IP:-127.0.0.1}:${PORTAINER_BIND_PORT:-9443}:9443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data

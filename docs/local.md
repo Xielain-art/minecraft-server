@@ -31,3 +31,4 @@ docker compose -f docker-compose.yml -f docker-compose.local.yml down
 ## Примечание
 
 В local-профиле `portainer` публикуется как `9443:9443`.
+Если порт занят, измени `PORTAINER_BIND_PORT` в `.env` (например `9444`) и открывай `https://localhost:<PORTAINER_BIND_PORT>`.

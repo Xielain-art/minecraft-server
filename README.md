@@ -63,6 +63,7 @@ git pull
 
 Portainer локально:
 - `https://localhost:9443`
+Если `9443` занят, задай `PORTAINER_BIND_PORT` в `.env` (например `9444`) и открой `https://localhost:9444`.
 
 Portainer на VPS (через SSH tunnel, рекомендовано):
 

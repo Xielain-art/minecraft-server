@@ -36,6 +36,8 @@ docker compose ps
 Пока tunnel открыт:
 - открыть `https://localhost:9443`
 
+Если на VPS порт `9443` уже занят, измени `PORTAINER_BIND_PORT` в `.env` (например `9444`), перезапусти `portainer`, и делай tunnel на новый порт.
+
 ## Что открывать публично
 
 - `22/tcp`
