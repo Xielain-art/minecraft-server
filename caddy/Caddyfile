@@ -5,19 +5,19 @@
 
 # Direct Dynmap listeners (local/VPS TCP ports).
 :8153 {
-    reverse_proxy mc-island1:8123
+    reverse_proxy island1:8123
 }
 
 :8154 {
-    reverse_proxy mc-island2:8123
+    reverse_proxy island2:8123
 }
 
 :8155 {
-    reverse_proxy mc-island3:8123
+    reverse_proxy island3:8123
 }
 
 :8156 {
-    reverse_proxy mc-island4:8123
+    reverse_proxy island4:8123
 }
 
 # Velocity Web API.
@@ -27,19 +27,19 @@
 
 # Map services.
 {$MAP1_DOMAIN} {
-    reverse_proxy mc-island1:8123
+    reverse_proxy island1:8123
 }
 
 {$MAP2_DOMAIN} {
-    reverse_proxy mc-island2:8123
+    reverse_proxy island2:8123
 }
 
 {$MAP3_DOMAIN} {
-    reverse_proxy mc-island3:8123
+    reverse_proxy island3:8123
 }
 
 {$MAP4_DOMAIN} {
-    reverse_proxy mc-island4:8123
+    reverse_proxy island4:8123
 }
 
 # Path-based fallback for single DuckDNS domain.
@@ -50,19 +50,19 @@
     }
 
     handle_path /maps/map1/* {
-        reverse_proxy mc-island1:8123
+        reverse_proxy island1:8123
     }
 
     handle_path /maps/map2/* {
-        reverse_proxy mc-island2:8123
+        reverse_proxy island2:8123
     }
 
     handle_path /maps/map3/* {
-        reverse_proxy mc-island3:8123
+        reverse_proxy island3:8123
     }
 
     handle_path /maps/map4/* {
-        reverse_proxy mc-island4:8123
+        reverse_proxy island4:8123
     }
 
     respond "Gerbarium Minecraft Network is running." 200
