@@ -184,12 +184,18 @@ https://xielain-art.github.io/minecraft-server/packs/server/pack.toml
 git clone <repo>
 cd minecraft-network
 cp .env.example .env
-cp velocity/forwarding.secret.example velocity/forwarding.secret
-nano velocity/forwarding.secret
+nano .env
 sed -i 's/\r$//' scripts/*.sh
 find scripts -name "*.sh" -exec chmod +x {} \;
 ./scripts/lifecycle/start.sh
 ```
+
+Важно:
+- `VELOCITY_FORWARDING_SECRET` задается только в `.env`
+- `scripts/lifecycle/start.sh` автоматически синхронизирует `./velocity/forwarding.secret` из `.env`
+- Этот же secret применяется ко всем backend-серверам через `FABRIC_PROXY_SECRET`
+- `FabricProxy-Lite.toml` не редактируется вручную: он генерируется в `data/<server>/config/` из `.env`
+- `server.properties` не редактируется вручную: он синхронизируется в `data/<server>/server.properties` из `.env`
 
 Логи:
 
@@ -251,12 +257,50 @@ curl http://localhost:8156
 
 - `data/` не хранится в Git
 - В `data/` лежат миры, логи, playerdata, runtime-файлы
-- MVP использует `player-info-forwarding-mode = "none"`
+- Для FabricProxy-Lite используется единая централизация через `.env` (`FABRIC_PROXY_*`)
+- `scripts/world-tools/render-fabricproxy-config.sh` генерирует `data/<server>/config/FabricProxy-Lite.toml` из `.env` для всех backend-серверов
+- `scripts/lifecycle/sync-server-properties.sh` синхронизирует backend `server.properties` в `data/<server>/server.properties` (не в `config`)
+- Если `data/<server>/server.properties` пустой/отсутствует, скрипт сначала берет базу из `servers/<server>/server.properties`, затем применяет централизованные `MC_*` ключи из `.env`
+- Для Velocity включен modern forwarding: `player-info-forwarding-mode = "modern"`
 - Для production нужен secure forwarding
 - В MVP игрок сначала попадает в `hub`
 - Возврат на последний остров после релога требует Velocity Last Server/Reconnect plugin (или кастомный плагин)
 - Минимум ресурсов: `4 vCPU / 16 GB RAM / 50 GB SSD`
 - RAM по умолчанию: Velocity `512m`, Hub `2G`, каждый island `3G`
 - Если RAM мало, уменьшить `ISLAND_MEMORY` до `2G`
+
+## Проверка FabricProxy-Lite и secret
+
+```bash
+cat ./velocity/forwarding.secret
+
+docker exec -it mc-velocity cat /server/forwarding.secret || true
+docker exec -it mc-velocity cat /data/forwarding.secret || true
+
+docker exec -it mc-hub printenv | grep FABRIC_PROXY
+docker exec -it mc-island1 printenv | grep FABRIC_PROXY
+docker exec -it mc-island2 printenv | grep FABRIC_PROXY
+docker exec -it mc-island3 printenv | grep FABRIC_PROXY
+docker exec -it mc-island4 printenv | grep FABRIC_PROXY
+```
+
+Перезапуск после изменений:
+
+```bash
+./scripts/lifecycle/sync-server-properties.sh
+docker compose down
+docker compose up -d
+```
+
+## Проверка backend server.properties
+
+```bash
+find ./data -name "server.properties" -type f -print
+
+grep -R "online-mode\|enforce-secure-profile\|server-ip\|server-port" ./data/*/server.properties
+
+docker exec -it mc-hub sh -c "grep -E 'online-mode|enforce-secure-profile|server-ip|server-port' /data/server.properties"
+docker exec -it mc-island1 sh -c "grep -E 'online-mode|enforce-secure-profile|server-ip|server-port' /data/server.properties"
+```
 
 

@@ -7,7 +7,7 @@ online-mode = false
 force-key-authentication = false
 prevent-client-proxy-connections = false
 
-player-info-forwarding-mode = "none"
+player-info-forwarding-mode = "modern"
 forwarding-secret-file = "forwarding.secret"
 
 announce-forge = false

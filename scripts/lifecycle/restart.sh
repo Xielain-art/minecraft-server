@@ -5,6 +5,27 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/../.." && pwd)"
 cd "$REPO_ROOT"
 
+set -a
+. ./.env
+set +a
+
+if [ -z "${VELOCITY_FORWARDING_SECRET:-}" ]; then
+  echo "ERROR: VELOCITY_FORWARDING_SECRET is empty in .env"
+  exit 1
+fi
+
+mkdir -p velocity
+printf "%s\n" "$VELOCITY_FORWARDING_SECRET" > velocity/forwarding.secret
+echo "Synced velocity/forwarding.secret from .env"
+
+if [ -f ./scripts/lifecycle/sync-server-properties.sh ]; then
+  bash ./scripts/lifecycle/sync-server-properties.sh
+fi
+
+if [ -f ./scripts/world-tools/render-fabricproxy-config.sh ]; then
+  bash ./scripts/world-tools/render-fabricproxy-config.sh
+fi
+
 if [ -f ./scripts/world-tools/prepare-mods.sh ]; then
   bash ./scripts/world-tools/prepare-mods.sh
 elif [ -f ./scripts/prepare-mods.sh ]; then

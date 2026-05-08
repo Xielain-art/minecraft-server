@@ -23,12 +23,28 @@ if [ ! -f .env ]; then
   echo "Created .env from .env.example"
 fi
 
-if [ ! -f velocity/forwarding.secret ]; then
-  cp velocity/forwarding.secret.example velocity/forwarding.secret
-  echo "Created velocity/forwarding.secret from example"
+set -a
+. ./.env
+set +a
+
+if [ -z "${VELOCITY_FORWARDING_SECRET:-}" ]; then
+  echo "ERROR: VELOCITY_FORWARDING_SECRET is empty in .env"
+  exit 1
 fi
 
+mkdir -p velocity
+printf "%s\n" "$VELOCITY_FORWARDING_SECRET" > velocity/forwarding.secret
+echo "Synced velocity/forwarding.secret from .env"
+
 ensure_dir "data"
+
+if [ -f ./scripts/lifecycle/sync-server-properties.sh ]; then
+  bash ./scripts/lifecycle/sync-server-properties.sh
+fi
+
+if [ -f ./scripts/world-tools/render-fabricproxy-config.sh ]; then
+  bash ./scripts/world-tools/render-fabricproxy-config.sh
+fi
 
 if [ -f ./scripts/world-tools/prepare-mods.sh ]; then
   bash ./scripts/world-tools/prepare-mods.sh

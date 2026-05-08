@@ -6,8 +6,7 @@
 git clone <repo>
 cd minecraft-network
 cp .env.example .env
-cp velocity/forwarding.secret.example velocity/forwarding.secret
-nano velocity/forwarding.secret
+nano .env
 sed -i 's/\r$//' scripts/*.sh
 find scripts -name "*.sh" -exec chmod +x {} \;
 ./scripts/lifecycle/start.sh
