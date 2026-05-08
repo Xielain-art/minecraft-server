@@ -142,12 +142,11 @@ services:
     container_name: mc-portainer
     restart: unless-stopped
     command: -H unix:///var/run/docker.sock
+    ports:
+      - "127.0.0.1:9443:9443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
-    # Optional debug only (do not enable by default):
-    # ports:
-    #   - "9443:9443"
     networks:
       - mc-network
 
@@ -157,7 +156,6 @@ services:
     restart: unless-stopped
     environment:
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN}
-      - PANEL_DOMAIN=${PANEL_DOMAIN}
       - STATUS_DOMAIN=${STATUS_DOMAIN}
       - MAP1_DOMAIN=${MAP1_DOMAIN}
       - MAP2_DOMAIN=${MAP2_DOMAIN}
@@ -168,8 +166,6 @@ services:
       - MAP3_PORT=${MAP3_PORT}
       - MAP4_PORT=${MAP4_PORT}
       - VELOCITY_WEB_API_PORT=${VELOCITY_WEB_API_PORT}
-      - PANEL_BASIC_AUTH_USER=${PANEL_BASIC_AUTH_USER}
-      - PANEL_BASIC_AUTH_PASSWORD_HASH=${PANEL_BASIC_AUTH_PASSWORD_HASH}
     ports:
       - "80:80"
       - "443:443"
@@ -181,7 +177,6 @@ services:
       - mc-network
     depends_on:
       - velocity
-      - portainer
     extra_hosts:
       - "host.docker.internal:host-gateway"
 

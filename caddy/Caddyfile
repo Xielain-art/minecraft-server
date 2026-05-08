@@ -1,20 +1,7 @@
 # Caddy reverse proxy for Gerbarium Minecraft Network
-# Domains/ports/basic-auth are loaded from .env via docker-compose.yml.
+# Domains/ports are loaded from .env via docker-compose.yml.
 # Minecraft itself is NOT proxied here.
 # Players connect to ${PUBLIC_DOMAIN}:25565 or play.${PUBLIC_DOMAIN}:25565.
-
-# Portainer Docker panel.
-# Preferred access method.
-{$PANEL_DOMAIN} {
-    basic_auth {
-        {$PANEL_BASIC_AUTH_USER} {$PANEL_BASIC_AUTH_PASSWORD_HASH}
-    }
-    reverse_proxy portainer:9443 {
-        transport http {
-            tls_insecure_skip_verify
-        }
-    }
-}
 
 # Velocity Web API.
 {$STATUS_DOMAIN} {
@@ -43,19 +30,7 @@
 
 # Path-based fallback for single DuckDNS domain.
 # Use this if subdomains are not configured.
-# Note: Portainer may not work perfectly behind /panel prefix. Prefer subdomain.
 {$PUBLIC_DOMAIN} {
-    handle_path /panel/* {
-        basic_auth {
-            {$PANEL_BASIC_AUTH_USER} {$PANEL_BASIC_AUTH_PASSWORD_HASH}
-        }
-        reverse_proxy portainer:9443 {
-            transport http {
-                tls_insecure_skip_verify
-            }
-        }
-    }
-
     handle_path /status/* {
         reverse_proxy velocity:{$VELOCITY_WEB_API_PORT}
     }

@@ -75,19 +75,16 @@ networks:
 * Caddy is used only for HTTP/HTTPS services.
 * Minecraft Java traffic must stay on Velocity TCP `25565`.
 * Do not use Caddy as normal HTTP proxy for Minecraft protocol traffic.
-* Velocity Web API (`25576`), Portainer (`9443`), and map web ports should be reached via Caddy.
+* Velocity Web API (`25576`) and map web ports should be reached via Caddy.
+* Portainer (`9443`) should be bound to localhost on VPS and reached via SSH tunnel.
 * DuckDNS values and web route ports must be configured in `.env` and passed to Caddy via container environment.
-* Panel Basic Auth credentials must be configured in `.env`:
-  * `PANEL_BASIC_AUTH_USER`
-  * `PANEL_BASIC_AUTH_PASSWORD_HASH` (hash only, not plaintext).
-
 ### Portainer Policy
 
 * Portainer is optional and operational only.
 * Portainer tasks: logs, restart, inspect, shell.
 * Git + Docker Compose remains source of truth.
 * Do not expose `9443` publicly by default.
-* Access Portainer through Caddy (`panel.<domain>` preferred).
+* Access Portainer through SSH tunnel to VPS localhost (`127.0.0.1:9443`).
 
 ### Map Web Services Policy
 
@@ -420,9 +417,9 @@ Important: backend servers must not define `ports`.
 
 * Docker socket mount `/var/run/docker.sock:/var/run/docker.sock`;
 * named volume `portainer_data`;
-* no public `ports` by default.
+* bind `9443` to VPS loopback only (`127.0.0.1:9443:9443`).
 
-Optional temporary debug mapping may be documented as commented example only:
+Optional temporary public debug mapping may be documented as commented example only:
 
 ```yaml
 ports:
