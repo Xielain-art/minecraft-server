@@ -5,6 +5,11 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/../.." && pwd)"
 cd "$REPO_ROOT"
 
+if [ ! -f .env ]; then
+  cp .env.example .env
+  echo "Created .env from .env.example"
+fi
+
 set -a
 . ./.env
 set +a
@@ -18,6 +23,10 @@ if [ ! -f ./scripts/lib/read-servers.py ]; then
   echo "ERROR: scripts/lib/read-servers.py not found"
   exit 1
 fi
+
+mkdir -p velocity
+printf "%s\n" "$VELOCITY_FORWARDING_SECRET" > velocity/forwarding.secret
+echo "Synced velocity/forwarding.secret from .env"
 
 while IFS='|' read -r SERVER _; do
   [ -z "$SERVER" ] && continue

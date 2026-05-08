@@ -258,7 +258,7 @@ curl http://localhost:8156
 - `data/` не хранится в Git
 - В `data/` лежат миры, логи, playerdata, runtime-файлы
 - Для FabricProxy-Lite используется единая централизация через `.env` (`FABRIC_PROXY_*`)
-- `scripts/world-tools/render-fabricproxy-config.sh` генерирует `data/<server>/config/FabricProxy-Lite.toml` из `.env` для всех backend-серверов
+- `scripts/lifecycle/sync-proxy-forwarding.sh` синхронизирует `velocity/forwarding.secret` и генерирует `data/<server>/config/FabricProxy-Lite.toml` из `.env`
 - `scripts/lifecycle/sync-server-properties.sh` синхронизирует backend `server.properties` в `data/<server>/server.properties` (не в `config`)
 - Если `data/<server>/server.properties` пустой/отсутствует, скрипт сначала берет базу из `servers/<server>/server.properties`, затем применяет централизованные `MC_*` ключи из `.env`
 - Для Velocity включен modern forwarding: `player-info-forwarding-mode = "modern"`
