@@ -3,29 +3,43 @@
 # Minecraft itself is NOT proxied here.
 # Players connect to ${PUBLIC_DOMAIN}:25565 or play.${PUBLIC_DOMAIN}:25565.
 
+# Direct Dynmap listeners (local/VPS TCP ports).
+:8153 {
+    reverse_proxy mc-island1:8123
+}
+
+:8154 {
+    reverse_proxy mc-island2:8123
+}
+
+:8155 {
+    reverse_proxy mc-island3:8123
+}
+
+:8156 {
+    reverse_proxy mc-island4:8123
+}
+
 # Velocity Web API.
 {$STATUS_DOMAIN} {
     reverse_proxy velocity:{$VELOCITY_WEB_API_PORT}
 }
 
 # Map services.
-# If maps run on Docker host, host.docker.internal works with extra_hosts.
-# If maps run inside Docker services, replace host.docker.internal with service names.
-# If maps run inside Minecraft containers, use actual backend hostnames/ports (for example hub:8153).
 {$MAP1_DOMAIN} {
-    reverse_proxy host.docker.internal:{$MAP1_PORT}
+    reverse_proxy mc-island1:8123
 }
 
 {$MAP2_DOMAIN} {
-    reverse_proxy host.docker.internal:{$MAP2_PORT}
+    reverse_proxy mc-island2:8123
 }
 
 {$MAP3_DOMAIN} {
-    reverse_proxy host.docker.internal:{$MAP3_PORT}
+    reverse_proxy mc-island3:8123
 }
 
 {$MAP4_DOMAIN} {
-    reverse_proxy host.docker.internal:{$MAP4_PORT}
+    reverse_proxy mc-island4:8123
 }
 
 # Path-based fallback for single DuckDNS domain.
@@ -36,19 +50,19 @@
     }
 
     handle_path /maps/map1/* {
-        reverse_proxy host.docker.internal:{$MAP1_PORT}
+        reverse_proxy mc-island1:8123
     }
 
     handle_path /maps/map2/* {
-        reverse_proxy host.docker.internal:{$MAP2_PORT}
+        reverse_proxy mc-island2:8123
     }
 
     handle_path /maps/map3/* {
-        reverse_proxy host.docker.internal:{$MAP3_PORT}
+        reverse_proxy mc-island3:8123
     }
 
     handle_path /maps/map4/* {
-        reverse_proxy host.docker.internal:{$MAP4_PORT}
+        reverse_proxy mc-island4:8123
     }
 
     respond "Gerbarium Minecraft Network is running." 200

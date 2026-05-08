@@ -225,6 +225,28 @@ Public:
 - 25576 Velocity Web API (кроме debug)
 - 8153-8156 map ports (кроме debug)
 
+## Проверка Dynmap через Caddy
+
+После правок конфигурации:
+
+```bash
+docker compose restart caddy
+docker exec -it mc-caddy caddy fmt --overwrite /etc/caddy/Caddyfile
+docker exec -it mc-caddy wget -O- http://mc-island1:8123
+docker exec -it mc-caddy wget -O- http://mc-island2:8123
+docker exec -it mc-caddy wget -O- http://mc-island3:8123
+docker exec -it mc-caddy wget -O- http://mc-island4:8123
+```
+
+Проверка с хоста:
+
+```bash
+curl http://localhost:8153
+curl http://localhost:8154
+curl http://localhost:8155
+curl http://localhost:8156
+```
+
 ## Важные примечания
 
 - `data/` не хранится в Git

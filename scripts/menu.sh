@@ -79,9 +79,9 @@ run_category_menu() {
 
     if [ -n "$args_line" ]; then
       read -r -a args <<< "$args_line"
-      "$selected_path" "${args[@]}"
+      bash "$selected_path" "${args[@]}"
     else
-      "$selected_path"
+      bash "$selected_path"
     fi
   done
 }
