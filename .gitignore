@@ -1,6 +1,8 @@
 data/
 backups/
 logs/
+*.log
+*.jar
 **/world/
 **/world_nether/
 **/world_the_end/
@@ -13,7 +15,9 @@ logs/
 **/ops.json
 **/whitelist.json
 .env.local
+.env
 velocity/forwarding.secret
 .DS_Store
 .idea/
 .vscode/
+!velocity/plugins/*.jar

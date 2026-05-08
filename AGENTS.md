@@ -786,3 +786,46 @@ docker compose ps
 
 If Docker is not installed, README must separately explain that Docker and the Docker Compose plugin must be installed before startup.
 
+
+## Packwiz Backend Mods Policy
+
+This `minecraft-server` repository manages server infrastructure.
+
+- Backend Fabric mods are managed via `packs/server/pack.toml`.
+- All backend Fabric services must use the same `SERVER_PACKWIZ_URL`.
+- Do not add client pack logic here.
+- Do not add `CLIENT_PACKWIZ_URL` here.
+- Client modpack update flow is managed in launcher repository, not here.
+- Velocity plugins belong in `velocity/plugins/`.
+- Fabric server mods belong in `packs/server/` via packwiz.
+- `shared/mods` is preserved as optional manual/emergency override layer.
+- `servers/<server>/mods` is preserved as rare server-specific manual override.
+- Future agents must not remove `shared/mods` or `servers/<server>/mods`.
+- `PACKWIZ_SERVER_MODE=true` means `scripts/world/prepare-mods.sh` must not delete packwiz-managed mods.
+- `ENABLE_MANUAL_MOD_OVERRIDES=true` allows copying override jars on top without deleting packwiz-managed mods.
+- Do not create separate packwiz packs per island/backend service.
+- Do not use different content mod sets per backend service unless explicitly approved.
+- Caddy may serve `./packs` read-only at `/packs/`.
+- Do not expose repository root through Caddy.
+
+## Packwiz Hosting Policy (GitHub Pages)
+
+- This `minecraft-server` repository manages server infrastructure.
+- Backend Fabric mods use `packs/server/pack.toml`.
+- Server pack metadata is hosted via GitHub Pages.
+- Do not serve packwiz files from Caddy/VPS by default.
+- All backend Fabric services must use same `SERVER_PACKWIZ_URL`.
+- Do not add client pack logic here.
+- Do not add `CLIENT_PACKWIZ_URL` here.
+- Launcher repository manages client modpack updates separately.
+- Velocity plugins belong in `velocity/plugins/`.
+- Fabric server mods belong in `packs/server/` through packwiz.
+- `shared/mods` is preserved as optional manual/emergency override layer.
+- `servers/<server>/mods` is preserved as rare server-specific manual override.
+- Future agents must not remove `shared/mods` or `servers/<server>/mods`.
+- `PACKWIZ_SERVER_MODE=true` prevents `prepare-mods.sh` from deleting packwiz-managed mods.
+- `ENABLE_MANUAL_MOD_OVERRIDES=true` allows copying override jars on top without deleting packwiz-managed mods.
+- Do not create separate packwiz packs for each island/backend server.
+- Do not use different content mod sets for different backend servers unless explicitly approved.
+- Do not expose repository root through Caddy.
+- If Caddy exists, use it for web services (panel/status/maps), not packwiz hosting.

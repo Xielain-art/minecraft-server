@@ -39,6 +39,7 @@ services:
       - ENABLE_COMMAND_BLOCK=true
       - SPAWN_PROTECTION=0
       - ALLOW_FLIGHT=true
+      - PACKWIZ_URL=${SERVER_PACKWIZ_URL}
     volumes:
       - ./data/hub:/data
       - ./servers/hub/server.properties:/data/server.properties
@@ -62,6 +63,7 @@ services:
       - ENABLE_COMMAND_BLOCK=true
       - SPAWN_PROTECTION=0
       - ALLOW_FLIGHT=true
+      - PACKWIZ_URL=${SERVER_PACKWIZ_URL}
     volumes:
       - ./data/island1:/data
       - ./servers/island1/server.properties:/data/server.properties
@@ -85,6 +87,7 @@ services:
       - ENABLE_COMMAND_BLOCK=true
       - SPAWN_PROTECTION=0
       - ALLOW_FLIGHT=true
+      - PACKWIZ_URL=${SERVER_PACKWIZ_URL}
     volumes:
       - ./data/island2:/data
       - ./servers/island2/server.properties:/data/server.properties
@@ -108,6 +111,7 @@ services:
       - ENABLE_COMMAND_BLOCK=true
       - SPAWN_PROTECTION=0
       - ALLOW_FLIGHT=true
+      - PACKWIZ_URL=${SERVER_PACKWIZ_URL}
     volumes:
       - ./data/island3:/data
       - ./servers/island3/server.properties:/data/server.properties
@@ -131,6 +135,7 @@ services:
       - ENABLE_COMMAND_BLOCK=true
       - SPAWN_PROTECTION=0
       - ALLOW_FLIGHT=true
+      - PACKWIZ_URL=${SERVER_PACKWIZ_URL}
     volumes:
       - ./data/island4:/data
       - ./servers/island4/server.properties:/data/server.properties
