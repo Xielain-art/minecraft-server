@@ -250,7 +250,7 @@ shared/mods + servers/island3/mods → data/island3/mods
 shared/mods + servers/island4/mods → data/island4/mods
 ```
 
-The `scripts/prepare-mods.sh` file must:
+The `scripts/world/prepare-mods.sh` file must:
 
 * use `set -e`;
 * read backend server names from `config/servers.json`;
@@ -296,9 +296,9 @@ echo "Mods prepared."
 
 ## Worldborder and Pregeneration
 
-* `scripts/setup-worldborders.sh` must configure worldborder for all servers in `config/servers.json`.
+* `scripts/world/setup-worldborders.sh` must configure worldborder for all servers in `config/servers.json`.
 * `worldborder set` uses diameter, not radius.
-* `scripts/pregenerate-worlds.sh` must start Chunky only for rows with `pregeneration_enabled=true`.
+* `scripts/world/pregenerate-worlds.sh` must start Chunky only for rows with `pregeneration_enabled=true`.
 * Chunky pregeneration uses `pregeneration_radius`.
 * Chunky must be installed as a Fabric mod in `shared/mods/` before pregeneration.
 * Do not restart containers or delete runtime data in pregeneration scripts.
@@ -447,7 +447,7 @@ SIMULATION_DISTANCE=6
 MAX_PLAYERS=50
 ```
 
-If `.env` is missing, `scripts/start.sh` must copy `.env.example` to `.env`.
+If `.env` is missing, `scripts/lifecycle/start.sh` must copy `.env.example` to `.env`.
 
 ## Velocity Config
 
@@ -508,7 +508,7 @@ Content:
 change-this-secret-later
 ```
 
-`scripts/start.sh` must create `velocity/forwarding.secret` from the example if the real file does not exist.
+`scripts/lifecycle/start.sh` must create `velocity/forwarding.secret` from the example if the real file does not exist.
 
 ## server.properties
 
@@ -566,17 +566,17 @@ Backend servers must use `online-mode=false` because players connect through Vel
 
 All `.sh` files must be executable.
 
-### scripts/start.sh
+### scripts/lifecycle/start.sh
 
 Must:
 
 1. use `set -e`;
 2. check for `.env`; if missing, copy `.env.example`;
 3. check for `velocity/forwarding.secret`; if missing, copy `velocity/forwarding.secret.example`;
-4. run `./scripts/prepare-mods.sh`;
+4. run `./scripts/world/prepare-mods.sh`;
 5. run `docker compose up -d`.
 
-### scripts/stop.sh
+### scripts/lifecycle/stop.sh
 
 ```bash
 #!/bin/bash
@@ -585,17 +585,17 @@ set -e
 docker compose down
 ```
 
-### scripts/restart.sh
+### scripts/lifecycle/restart.sh
 
 ```bash
 #!/bin/bash
 set -e
 
-./scripts/prepare-mods.sh
+./scripts/world/prepare-mods.sh
 docker compose restart
 ```
 
-### scripts/logs.sh
+### scripts/ops/logs.sh
 
 ```bash
 #!/bin/bash
@@ -604,7 +604,7 @@ set -e
 docker compose logs -f
 ```
 
-### scripts/status.sh
+### scripts/ops/status.sh
 
 ```bash
 #!/bin/bash
@@ -696,26 +696,26 @@ cp .env.example .env
 cp velocity/forwarding.secret.example velocity/forwarding.secret
 nano velocity/forwarding.secret
 chmod +x scripts/*.sh
-./scripts/start.sh
+./scripts/lifecycle/start.sh
 ```
 
 7. How to view logs:
 
 ```bash
-./scripts/logs.sh
+./scripts/ops/logs.sh
 ```
 
 8. How to stop:
 
 ```bash
-./scripts/stop.sh
+./scripts/lifecycle/stop.sh
 ```
 
 9. How to restart after adding mods:
 
 ```bash
 git pull
-./scripts/restart.sh
+./scripts/lifecycle/restart.sh
 ```
 
 10. Which ports to open on the VPS:
@@ -780,8 +780,9 @@ After generating files, run:
 
 ```bash
 chmod +x scripts/*.sh
-./scripts/start.sh
+./scripts/lifecycle/start.sh
 docker compose ps
 ```
 
 If Docker is not installed, README must separately explain that Docker and the Docker Compose plugin must be installed before startup.
+

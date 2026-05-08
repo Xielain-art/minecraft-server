@@ -32,33 +32,39 @@ cp .env.example .env
 cp velocity/forwarding.secret.example velocity/forwarding.secret
 nano velocity/forwarding.secret
 sed -i 's/\r$//' scripts/*.sh
-chmod +x scripts/*.sh
-./scripts/start.sh
+find scripts -name "*.sh" -exec chmod +x {} \;
+./scripts/lifecycle/start.sh
 ```
 
 Логи:
 
 ```bash
-./scripts/logs.sh
+./scripts/ops/logs.sh
 ```
 
 Остановка:
 
 ```bash
-./scripts/stop.sh
+./scripts/lifecycle/stop.sh
 ```
 
 Перезапуск после добавления модов:
 
 ```bash
 git pull
-./scripts/restart.sh
+./scripts/lifecycle/restart.sh
 ```
 
 ## Локальный запуск
 
 ```bash
-./scripts/start-local.sh
+./scripts/lifecycle/start-local.sh
+```
+
+Единое меню скриптов:
+
+```bash
+./scripts/menu.sh
 ```
 
 Portainer локально:
@@ -68,11 +74,11 @@ Portainer локально:
 Portainer на VPS (через SSH tunnel, рекомендовано):
 
 ```powershell
-.\scripts\connect-portainer-tunnel.ps1 -ServerIp SERVER_IP
+.\scripts\connect\connect-portainer-tunnel.ps1 -ServerIp SERVER_IP
 ```
 
 ```bash
-./scripts/connect-portainer-tunnel.sh SERVER_IP
+./scripts/connect/connect-portainer-tunnel.sh SERVER_IP
 ```
 
 ## Порты
@@ -100,3 +106,4 @@ Backend Minecraft-сервера публично не открывать.
 - Hub `2G`
 - Каждый island `3G`
 - Если RAM мало: уменьшить `ISLAND_MEMORY` до `2G`.
+

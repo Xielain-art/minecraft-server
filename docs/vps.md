@@ -9,8 +9,8 @@ cp .env.example .env
 cp velocity/forwarding.secret.example velocity/forwarding.secret
 nano velocity/forwarding.secret
 sed -i 's/\r$//' scripts/*.sh
-chmod +x scripts/*.sh scripts/caddy/*.sh
-./scripts/start.sh
+find scripts -name "*.sh" -exec chmod +x {} \;
+./scripts/lifecycle/start.sh
 docker compose ps
 ```
 
@@ -24,13 +24,13 @@ docker compose ps
 Подключение с Windows:
 
 ```powershell
-.\scripts\connect-portainer-tunnel.ps1 -ServerIp SERVER_IP
+.\scripts\connect\connect-portainer-tunnel.ps1 -ServerIp SERVER_IP
 ```
 
 Подключение с Linux/macOS:
 
 ```bash
-./scripts/connect-portainer-tunnel.sh SERVER_IP
+./scripts/connect/connect-portainer-tunnel.sh SERVER_IP
 ```
 
 Пока tunnel открыт:
@@ -52,3 +52,4 @@ docker compose ps
 - `8153-8156/tcp`
 - backend Minecraft порты
 - `25575` (RCON)
+

@@ -7,7 +7,7 @@ SSH_PORT="${3:-22}"
 LOCAL_PORT="${4:-9443}"
 
 if [ -z "$SERVER_IP" ]; then
-  echo "Usage: ./scripts/connect-portainer-tunnel.sh <server_ip> [ssh_user] [ssh_port] [local_port]"
+  echo "Usage: ./scripts/connect/connect-portainer-tunnel.sh <server_ip> [ssh_user] [ssh_port] [local_port]"
   exit 1
 fi
 

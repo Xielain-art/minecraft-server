@@ -4,7 +4,8 @@
 
 ```bash
 chmod +x scripts/*.sh
-./scripts/start-local.sh
+find scripts -name "*.sh" -exec chmod +x {} \;
+./scripts/lifecycle/start-local.sh
 docker compose -f docker-compose.yml -f docker-compose.local.yml ps
 ```
 
@@ -17,7 +18,7 @@ docker compose -f docker-compose.yml -f docker-compose.local.yml down
 Жесткий локальный перезапуск (down/up + пересборка mods):
 
 ```bash
-./scripts/hard-restart-local.sh
+./scripts/lifecycle/hard-restart-local.sh
 ```
 
 ## Локальные адреса
@@ -32,3 +33,4 @@ docker compose -f docker-compose.yml -f docker-compose.local.yml down
 
 В local-профиле `portainer` публикуется как `9443:9443`.
 Если порт занят, измени `PORTAINER_BIND_PORT` в `.env` (например `9444`) и открывай `https://localhost:<PORTAINER_BIND_PORT>`.
+
