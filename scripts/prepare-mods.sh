@@ -5,7 +5,8 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
 
-CONFIG_FILE="config/servers.conf"
+SERVERS_READER="scripts/lib/read-servers.py"
+PYTHON_BIN="${PYTHON_BIN:-python3}"
 
 ensure_dir() {
   local path="$1"
@@ -20,8 +21,8 @@ ensure_dir() {
   mkdir -p "$path"
 }
 
-if [ ! -f "$CONFIG_FILE" ]; then
-  echo "ERROR: config/servers.conf not found."
+if [ ! -f "$SERVERS_READER" ]; then
+  echo "ERROR: $SERVERS_READER not found."
   exit 1
 fi
 
@@ -42,4 +43,4 @@ while IFS='|' read -r name container service host port center_x center_z diamete
   cp shared/mods/*.jar "data/$name/mods/" 2>/dev/null || true
   cp "servers/$name/mods"/*.jar "data/$name/mods/" 2>/dev/null || true
   echo "done: data/$name/mods"
-done < "$CONFIG_FILE"
+done < <("$PYTHON_BIN" "$SERVERS_READER")

@@ -1,0 +1,12 @@
+services:
+  caddy:
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+      - "8082:8082"
+      - "8153:8153"
+      - "8154:8154"
+      - "8155:8155"
+      - "8156:8156"
+    volumes:
+      - ./caddy/Caddyfile.local:/etc/caddy/Caddyfile:ro

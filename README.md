@@ -37,21 +37,21 @@
 
 ## Конфигурация серверов
 
-Backend-сервера описываются в `config/servers.conf`. Скрипты не хардкодят `island1/island2/island3/island4` и работают по данным из этого файла.
+Backend-сервера описываются в `config/servers.json`. Скрипты не хардкодят `island1/island2/island3/island4` и работают по данным из этого файла.
 
-Формат строки:
+Формат записи (JSON object):
 
-`name|container|service|host|port|worldborder_center_x|worldborder_center_z|worldborder_diameter|pregeneration_radius|pregeneration_enabled`
+`name, container, service, host, port, worldborder_center_x, worldborder_center_z, worldborder_diameter, pregeneration_radius, pregeneration_enabled, gen_map`
 
 Пример:
 
-`forest|mc-forest|forest|forest|25565|0|0|10000|5000|true`
+`{"name":"forest","container":"mc-forest","service":"forest","host":"forest","port":25565,"worldborder_center_x":0,"worldborder_center_z":0,"worldborder_diameter":10000,"pregeneration_radius":5000,"pregeneration_enabled":true,"gen_map":true}`
 
 Чтобы добавить новый backend-сервер:
 1. Добавить `service` в `docker-compose.yml`.
 2. Добавить backend в `velocity/velocity.toml`.
 3. Создать `servers/<server-name>/mods/` и `servers/<server-name>/config/`.
-4. Добавить строку в `config/servers.conf`.
+4. Добавить объект в массив `config/servers.json`.
 5. Запустить `./scripts/restart.sh`.
 
 ## Mods vs Plugins
@@ -72,7 +72,7 @@ Backend-сервера описываются в `config/servers.conf`. Скри
 - Worldborder ограничивает размер мира.
 - `worldborder set` использует диаметр, не радиус.
 - Chunky pregeneration использует радиус.
-- Значения берутся из `config/servers.conf`.
+- Значения берутся из `config/servers.json`.
 - Запуск:
 
 ```bash
@@ -128,6 +128,18 @@ docker compose up -d caddy
 docker logs -f mc-caddy
 docker compose ps
 ```
+
+Локально (без DuckDNS/боевого TLS) используйте отдельный профиль:
+
+```bash
+./scripts/start-local.sh
+```
+
+Локальные URL:
+- `http://localhost:8080` — health/fallback
+- `http://localhost:8081` — Velocity Web API proxy
+- `http://localhost:8082` — Portainer proxy (Basic Auth)
+- `http://localhost:8153..8156` — map proxy
 
 Проверка на VPS:
 

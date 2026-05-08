@@ -174,14 +174,27 @@ The `data/` directory may be created locally at runtime, but it must not be stor
 
 ## Backend Server Metadata Source of Truth
 
-`config/servers.conf` is the source of truth for backend server metadata used by scripts.
+`config/servers.json` is the source of truth for backend server metadata used by scripts.
 
-Scripts must not hardcode backend server names (`hub`, `island1`, etc.). They must iterate over `config/servers.conf`, skip empty lines, and skip comment lines starting with `#`.
+Scripts must not hardcode backend server names (`hub`, `island1`, etc.). They must iterate over `config/servers.json`.
 
-File format:
+File format (JSON array of objects):
 
 ```text
-name|container|service|host|port|worldborder_center_x|worldborder_center_z|worldborder_diameter|pregeneration_radius|pregeneration_enabled
+[
+  {
+    "name": "hub",
+    "container": "mc-hub",
+    "service": "hub",
+    "host": "hub",
+    "port": 25565,
+    "worldborder_center_x": 0,
+    "worldborder_center_z": 0,
+    "worldborder_diameter": 1000,
+    "pregeneration_radius": 500,
+    "pregeneration_enabled": true
+  }
+]
 ```
 
 Fields:
@@ -243,7 +256,7 @@ shared/mods + servers/island4/mods → data/island4/mods
 The `scripts/prepare-mods.sh` file must:
 
 * use `set -e`;
-* read backend server names from `config/servers.conf`;
+* read backend server names from `config/servers.json`;
 * create `data/$SERVER/mods`;
 * remove old `.jar` files from `data/$SERVER/mods`;
 * copy `.jar` files from `shared/mods`;
@@ -258,7 +271,7 @@ Example logic:
 set -e
 
 while IFS='|' read -r SERVER _; do
-  [[ -z "$SERVER" || "$SERVER" =~ ^[[:space:]]*# ]] && continue
+  [[ -z "$SERVER" ]] && continue
   echo "Preparing mods for $SERVER..."
 
   mkdir -p "data/$SERVER/mods"
@@ -286,7 +299,7 @@ echo "Mods prepared."
 
 ## Worldborder and Pregeneration
 
-* `scripts/setup-worldborders.sh` must configure worldborder for all servers in `config/servers.conf`.
+* `scripts/setup-worldborders.sh` must configure worldborder for all servers in `config/servers.json`.
 * `worldborder set` uses diameter, not radius.
 * `scripts/pregenerate-worlds.sh` must start Chunky only for rows with `pregeneration_enabled=true`.
 * Chunky pregeneration uses `pregeneration_radius`.
@@ -300,7 +313,7 @@ When adding a new backend server (`forest`, `desert`, `swamp`, `volcano`, `skyla
 * `docker-compose.yml` (new service).
 * `velocity/velocity.toml` (new backend entry).
 * `servers/<name>/` (at least `mods/`, `config/`, and `server.properties`).
-* `config/servers.conf` (new metadata row).
+* `config/servers.json` (new metadata object).
 
 ## Docker Compose Requirements
 

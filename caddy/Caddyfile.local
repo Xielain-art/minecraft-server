@@ -1,0 +1,34 @@
+:8080 {
+    respond "Gerbarium local Caddy is running." 200
+}
+
+:8081 {
+    reverse_proxy velocity:{$VELOCITY_WEB_API_PORT}
+}
+
+:8082 {
+    basic_auth {
+        {$PANEL_BASIC_AUTH_USER} {$PANEL_BASIC_AUTH_PASSWORD_HASH}
+    }
+    reverse_proxy portainer:9443 {
+        transport http {
+            tls_insecure_skip_verify
+        }
+    }
+}
+
+:8153 {
+    reverse_proxy host.docker.internal:{$MAP1_PORT}
+}
+
+:8154 {
+    reverse_proxy host.docker.internal:{$MAP2_PORT}
+}
+
+:8155 {
+    reverse_proxy host.docker.internal:{$MAP3_PORT}
+}
+
+:8156 {
+    reverse_proxy host.docker.internal:{$MAP4_PORT}
+}

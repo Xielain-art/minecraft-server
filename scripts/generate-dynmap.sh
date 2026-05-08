@@ -1,12 +1,13 @@
 #!/bin/bash
 set -e
 
-CONFIG_FILE="config/servers.conf"
+SERVERS_READER="scripts/lib/read-servers.py"
+PYTHON_BIN="${PYTHON_BIN:-python3}"
 
 docker --version >/dev/null
 
-if [ ! -f "$CONFIG_FILE" ]; then
-  echo "ERROR: config/servers.conf not found."
+if [ ! -f "$SERVERS_READER" ]; then
+  echo "ERROR: $SERVERS_READER not found."
   exit 1
 fi
 
@@ -41,7 +42,7 @@ while IFS='|' read -r name container service host port center_x center_z diamete
   fi
 
   echo "Started dynmap fullrender for $name."
-done < "$CONFIG_FILE"
+done < <("$PYTHON_BIN" "$SERVERS_READER")
 
 echo "Dynmap fullrender started for configured servers."
 echo "Use docker logs -f <container> to monitor progress."

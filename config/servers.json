@@ -1,0 +1,67 @@
+[
+  {
+    "name": "hub",
+    "container": "mc-hub",
+    "service": "hub",
+    "host": "hub",
+    "port": 25565,
+    "worldborder_center_x": 0,
+    "worldborder_center_z": 0,
+    "worldborder_diameter": 1000,
+    "pregeneration_radius": 500,
+    "pregeneration_enabled": true,
+    "gen_map": true
+  },
+  {
+    "name": "island1",
+    "container": "mc-island1",
+    "service": "island1",
+    "host": "island1",
+    "port": 25565,
+    "worldborder_center_x": 0,
+    "worldborder_center_z": 0,
+    "worldborder_diameter": 10000,
+    "pregeneration_radius": 5000,
+    "pregeneration_enabled": false,
+    "gen_map": false
+  },
+  {
+    "name": "island2",
+    "container": "mc-island2",
+    "service": "island2",
+    "host": "island2",
+    "port": 25565,
+    "worldborder_center_x": 0,
+    "worldborder_center_z": 0,
+    "worldborder_diameter": 10000,
+    "pregeneration_radius": 5000,
+    "pregeneration_enabled": false,
+    "gen_map": false
+  },
+  {
+    "name": "island3",
+    "container": "mc-island3",
+    "service": "island3",
+    "host": "island3",
+    "port": 25565,
+    "worldborder_center_x": 0,
+    "worldborder_center_z": 0,
+    "worldborder_diameter": 8000,
+    "pregeneration_radius": 4000,
+    "pregeneration_enabled": false,
+    "gen_map": false
+  },
+  {
+    "name": "island4",
+    "container": "mc-island4",
+    "service": "island4",
+    "host": "island4",
+    "port": 25565,
+    "worldborder_center_x": 0,
+    "worldborder_center_z": 0,
+    "worldborder_diameter": 8000,
+    "pregeneration_radius": 4000,
+    "pregeneration_enabled": false,
+    "gen_map": false
+  }
+]
