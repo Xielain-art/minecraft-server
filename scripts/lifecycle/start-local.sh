@@ -15,10 +15,10 @@ if [ ! -f velocity/forwarding.secret ]; then
   echo "Created velocity/forwarding.secret from example"
 fi
 
-if [ -x ./scripts/world/prepare-mods.sh ]; then
-  ./scripts/world/prepare-mods.sh
-elif [ -x ./scripts/prepare-mods.sh ]; then
-  ./scripts/prepare-mods.sh
+if [ -f ./scripts/world/prepare-mods.sh ]; then
+  bash ./scripts/world/prepare-mods.sh
+elif [ -f ./scripts/prepare-mods.sh ]; then
+  bash ./scripts/prepare-mods.sh
 else
   echo "ERROR: prepare-mods.sh not found. Expected ./scripts/world/prepare-mods.sh or ./scripts/prepare-mods.sh"
   exit 1
