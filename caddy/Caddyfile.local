@@ -7,17 +7,17 @@
 }
 
 :8153 {
-    reverse_proxy host.docker.internal:{$MAP1_PORT}
+    reverse_proxy island1:8123
 }
 
 :8154 {
-    reverse_proxy host.docker.internal:{$MAP2_PORT}
+    reverse_proxy island2:8123
 }
 
 :8155 {
-    reverse_proxy host.docker.internal:{$MAP3_PORT}
+    reverse_proxy island3:8123
 }
 
 :8156 {
-    reverse_proxy host.docker.internal:{$MAP4_PORT}
+    reverse_proxy island4:8123
 }

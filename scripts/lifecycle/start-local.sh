@@ -23,5 +23,6 @@ else
   echo "ERROR: prepare-mods.sh not found. Expected ./scripts/world-tools/prepare-mods.sh or ./scripts/prepare-mods.sh"
   exit 1
 fi
-docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --remove-orphans
+docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --force-recreate caddy
 

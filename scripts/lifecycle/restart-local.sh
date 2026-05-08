@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 set -e
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -13,7 +13,6 @@ else
   echo "ERROR: prepare-mods.sh not found. Expected ./scripts/world-tools/prepare-mods.sh or ./scripts/prepare-mods.sh"
   exit 1
 fi
-docker compose -f docker-compose.yml -f docker-compose.local.yml down --remove-orphans
-docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --remove-orphans
-docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --force-recreate caddy
 
+docker compose -f docker-compose.yml -f docker-compose.local.yml restart
+docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --force-recreate caddy
