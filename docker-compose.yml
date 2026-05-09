@@ -10,7 +10,7 @@ services:
     environment:
       - TYPE=VELOCITY
       - MEMORY=${VELOCITY_MEMORY}
-      - VELOCITY_VERSION=3.4.0
+      - VELOCITY_VERSION=${VELOCITY_VERSION}
     volumes:
       - ./velocity:/server
     networks:
