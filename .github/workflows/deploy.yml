@@ -1,0 +1,43 @@
+name: Deploy Minecraft Server
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+
+            cd ${{ secrets.VPS_PROJECT_PATH }}
+
+            echo "== Pull latest code =="
+            git fetch origin main
+            git reset --hard origin/main
+
+            echo "== Restore executable permissions =="
+            chmod +x scripts/*.sh || true
+            chmod +x scripts/lifecycle/*.sh || true
+            chmod +x scripts/caddy/*.sh || true
+            chmod +x scripts/connect/*.sh || true
+            chmod +x scripts/ops/*.sh || true
+            chmod +x scripts/world-tools/*.sh || true
+
+            echo "== Check docker compose config =="
+            docker compose config >/dev/null
+
+            echo "== Restart server using project script =="
+            ./scripts/lifecycle/restart.sh
+
+            echo "== Cleanup unused Docker images =="
+            docker image prune -f
+
+            echo "== Done =="
