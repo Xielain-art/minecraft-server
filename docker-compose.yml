@@ -323,9 +323,16 @@ services:
     image: filebrowser/filebrowser:s6
     container_name: mc-schematics-browser
     restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - FB_NOAUTH=true
+      - FILEBROWSER_CONFIG=/config/settings.json
+      - FILEBROWSER_DATABASE=/database/filebrowser.db
     volumes:
       - ./shared/schematics:/srv
       - schematics_browser_db:/database
+      - ./config/filebrowser-schematics:/config
     networks:
       - mc-network
 
