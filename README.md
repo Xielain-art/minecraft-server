@@ -197,6 +197,40 @@ find scripts -name "*.sh" -exec chmod +x {} \;
 - `FabricProxy-Lite.toml` не редактируется вручную: он генерируется в `data/<server>/config/` из `.env`
 - `server.properties` не редактируется вручную: он синхронизируется в `data/<server>/server.properties` из `.env`
 
+## MariaDB + LuckPerms (через .env)
+
+`docker-compose.yml` использует `.env` для backend Fabric серверов и `mc-mariadb` через `env_file`.
+
+Добавьте в `.env`:
+
+```env
+MARIADB_ROOT_PASSWORD=CHANGE_ME_ROOT_PASSWORD
+MARIADB_DATABASE=luckperms
+MARIADB_USER=luckperms
+MARIADB_PASSWORD=CHANGE_ME_LUCKPERMS_PASSWORD
+CFG_LUCKPERMS_DB_PASSWORD=CHANGE_ME_LUCKPERMS_PASSWORD
+```
+
+Шаблоны конфигов LuckPerms:
+- Fabric (HOCON): `templates/luckperms/fabric-config.mariadb.example.conf`
+- Velocity (YAML): `templates/luckperms/velocity-config.mariadb.example.yml`
+
+Запуск и проверка MariaDB:
+
+```bash
+docker compose --env-file .env up -d mc-mariadb
+docker ps | grep mc-mariadb
+docker logs mc-mariadb --tail=50
+```
+
+Проверка, что `3306` не открыт наружу:
+
+```bash
+docker ps | grep mc-mariadb
+```
+
+В выводе не должно быть `0.0.0.0:3306->3306/tcp`.
+
 Логи:
 
 ```bash

@@ -28,6 +28,8 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-hub
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -53,6 +55,8 @@ services:
       - FABRIC_PROXY_HACK_EARLY_SEND=${FABRIC_PROXY_HACK_EARLY_SEND}
       - FABRIC_PROXY_HACK_MESSAGE_CHAIN=${FABRIC_PROXY_HACK_MESSAGE_CHAIN}
       - FABRIC_PROXY_DISCONNECT_MESSAGE=${FABRIC_PROXY_DISCONNECT_MESSAGE}
+      - REPLACE_ENV_VARIABLES=true
+      - REPLACE_ENV_DURING_SYNC=true
     volumes:
       - ./data/hub:/data
     networks:
@@ -64,6 +68,8 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-island1
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -89,6 +95,8 @@ services:
       - FABRIC_PROXY_HACK_EARLY_SEND=${FABRIC_PROXY_HACK_EARLY_SEND}
       - FABRIC_PROXY_HACK_MESSAGE_CHAIN=${FABRIC_PROXY_HACK_MESSAGE_CHAIN}
       - FABRIC_PROXY_DISCONNECT_MESSAGE=${FABRIC_PROXY_DISCONNECT_MESSAGE}
+      - REPLACE_ENV_VARIABLES=true
+      - REPLACE_ENV_DURING_SYNC=true
     volumes:
       - ./data/island1:/data
     networks:
@@ -100,6 +108,8 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-island2
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -125,6 +135,8 @@ services:
       - FABRIC_PROXY_HACK_EARLY_SEND=${FABRIC_PROXY_HACK_EARLY_SEND}
       - FABRIC_PROXY_HACK_MESSAGE_CHAIN=${FABRIC_PROXY_HACK_MESSAGE_CHAIN}
       - FABRIC_PROXY_DISCONNECT_MESSAGE=${FABRIC_PROXY_DISCONNECT_MESSAGE}
+      - REPLACE_ENV_VARIABLES=true
+      - REPLACE_ENV_DURING_SYNC=true
     volumes:
       - ./data/island2:/data
     networks:
@@ -136,6 +148,8 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-island3
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -161,6 +175,8 @@ services:
       - FABRIC_PROXY_HACK_EARLY_SEND=${FABRIC_PROXY_HACK_EARLY_SEND}
       - FABRIC_PROXY_HACK_MESSAGE_CHAIN=${FABRIC_PROXY_HACK_MESSAGE_CHAIN}
       - FABRIC_PROXY_DISCONNECT_MESSAGE=${FABRIC_PROXY_DISCONNECT_MESSAGE}
+      - REPLACE_ENV_VARIABLES=true
+      - REPLACE_ENV_DURING_SYNC=true
     volumes:
       - ./data/island3:/data
     networks:
@@ -172,6 +188,8 @@ services:
     image: itzg/minecraft-server:java17
     container_name: mc-island4
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
       - EULA=TRUE
       - TYPE=FABRIC
@@ -197,12 +215,31 @@ services:
       - FABRIC_PROXY_HACK_EARLY_SEND=${FABRIC_PROXY_HACK_EARLY_SEND}
       - FABRIC_PROXY_HACK_MESSAGE_CHAIN=${FABRIC_PROXY_HACK_MESSAGE_CHAIN}
       - FABRIC_PROXY_DISCONNECT_MESSAGE=${FABRIC_PROXY_DISCONNECT_MESSAGE}
+      - REPLACE_ENV_VARIABLES=true
+      - REPLACE_ENV_DURING_SYNC=true
     volumes:
       - ./data/island4:/data
     networks:
       - mc-network
     ports:
       - "24458:24454/udp"
+
+  mc-mariadb:
+    image: mariadb:11.4
+    container_name: mc-mariadb
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - mc-network
 
   portainer:
     image: portainer/portainer-ce:latest
@@ -257,3 +294,4 @@ volumes:
   caddy_data:
   caddy_config:
   portainer_data:
+  mariadb_data:
