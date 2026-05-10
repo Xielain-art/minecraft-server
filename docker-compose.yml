@@ -292,6 +292,9 @@ services:
       - caddy_config:/config
     networks:
       - mc-network
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     depends_on:
       - velocity
       - authelia
