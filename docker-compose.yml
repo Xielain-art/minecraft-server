@@ -11,6 +11,8 @@ services:
       - TYPE=VELOCITY
       - MEMORY=${VELOCITY_MEMORY}
       - VELOCITY_VERSION=${VELOCITY_VERSION}
+      - JVM_OPTS=-Dvelocity.packet-decode-logging=true
+
     volumes:
       - ./velocity:/server
     networks:
