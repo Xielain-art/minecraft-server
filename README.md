@@ -391,4 +391,150 @@ docker exec -it mc-hub sh -c "grep -E 'online-mode|enforce-secure-profile|server
 docker exec -it mc-island1 sh -c "grep -E 'online-mode|enforce-secure-profile|server-ip|server-port' /data/server.properties"
 ```
 
+## WorldEdit Schematics Browser with Authelia
+
+Назначение:
+- Это отдельная защищенная веб-панель для загрузки/скачивания WorldEdit `.schem` файлов.
+- Трафик идет через Caddy HTTPS.
+- Перед File Browser стоит страница входа Authelia.
+- Сам File Browser может оставаться вторым слоем авторизации.
+- Панель имеет доступ только к `./shared/schematics`.
+
+DNS:
+- Нужно создать A-records:
+  - `auth -> SERVER_IP`
+  - `schematics -> SERVER_IP`
+- Если в `.env`:
+  - `AUTH_DOMAIN=auth.example.com`
+  - `SCHEMATICS_DOMAIN=schematics.example.com`
+- Тогда:
+  - `auth.example.com -> SERVER_IP`
+  - `schematics.example.com -> SERVER_IP`
+
+`.env`:
+- В реальный `.env` добавить:
+
+```env
+AUTH_DOMAIN=auth.your-domain.com
+SCHEMATICS_DOMAIN=schematics.your-domain.com
+TZ=Europe/Berlin
+AUTHELIA_JWT_SECRET=...
+AUTHELIA_SESSION_SECRET=...
+AUTHELIA_STORAGE_ENCRYPTION_KEY=...
+```
+
+Сгенерировать секреты:
+
+```bash
+docker run --rm authelia/authelia:4.38 authelia crypto rand --length 64 --charset alphanumeric
+docker run --rm authelia/authelia:4.38 authelia crypto rand --length 64 --charset alphanumeric
+docker run --rm authelia/authelia:4.38 authelia crypto rand --length 64 --charset alphanumeric
+```
+
+Сгенерировать password hash:
+
+```bash
+docker run --rm authelia/authelia:4.38 authelia crypto hash generate argon2 --password 'YOUR_PASSWORD'
+```
+
+Вставить hash в `authelia/users_database.yml` вместо `CHANGE_ME_HASHED_PASSWORD`.
+
+Перед первым запуском с mount сохранить старые схемы:
+
+```bash
+cd /opt/minecraft-server
+mkdir -p shared/schematics/hub
+cp -n data/hub/config/worldedit/schematics/* shared/schematics/hub/ 2>/dev/null || true
+```
+
+Проверить compose:
+
+```bash
+docker compose --env-file .env config
+```
+
+Запуск:
+
+```bash
+docker compose --env-file .env up -d authelia schematics-browser caddy
+docker compose --env-file .env up -d hub island1 island2 island3 island4
+```
+
+Проверка контейнеров:
+
+```bash
+docker ps | grep -E "authelia|schematics|caddy"
+docker logs mc-authelia --tail=100
+docker logs mc-caddy --tail=100
+```
+
+Открыть:
+
+```text
+https://${SCHEMATICS_DOMAIN}
+```
+
+Ожидаемый flow:
+- Сначала редирект/страница входа Authelia.
+- После логина пользователь попадает в File Browser.
+- В File Browser видны папки:
+  - `hub`
+  - `island1`
+  - `island2`
+  - `island3`
+  - `island4`
+  - `common`
+
+Как использовать схемы:
+- Сохранить схему в игре:
+  - `//wand`
+  - выделить область
+  - `//copy`
+  - `//schem save castle`
+- Важно:
+  - `//copy` и `//cut` не создают файл.
+  - Файл создается только после `//schem save <name>`.
+- Если игрок на `hub` делает `//schem save castle`, файл будет в:
+  - `shared/schematics/hub/castle.schem`
+- Если игрок на `island1` делает `//schem save castle`, файл будет в:
+  - `shared/schematics/island1/castle.schem`
+
+Как загрузить schematic через веб:
+- открыть `https://${SCHEMATICS_DOMAIN}`
+- пройти Authelia login
+- зайти в папку нужного сервера, например `island1`
+- загрузить `castle.schem`
+- в игре на `island1` выполнить:
+  - `//schem load castle`
+  - `//paste`
+
+Как перенести схему между серверами:
+- Через веб:
+  - скачать из `hub`
+  - загрузить в `island1`
+- Или на VPS:
+
+```bash
+cp shared/schematics/hub/castle.schem shared/schematics/island1/castle.schem
+```
+
+Проверка пути внутри контейнера:
+
+```bash
+docker exec -it mc-hub sh -c "ls -la /data/config/worldedit/schematics"
+docker exec -it mc-island1 sh -c "ls -la /data/config/worldedit/schematics"
+```
+
+Security notes:
+- `authelia` не имеет public ports.
+- `schematics-browser` не имеет public ports.
+- Доступ только через Caddy HTTPS.
+- Authelia защищает endpoint.
+- File Browser может оставаться вторым слоем авторизации.
+- Не оставлять File Browser `admin/admin`.
+- Не публиковать реальные пароли в Git.
+- `.env` не должен коммититься.
+- `users_database.yml` с реальными hash-паролями лучше не коммитить в публичный репозиторий.
+- `schematics-browser` имеет доступ только к `./shared/schematics`, не ко всему проекту.
+
 

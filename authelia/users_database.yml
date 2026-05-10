@@ -1,0 +1,15 @@
+users:
+  admin:
+    displayname: "Gerbarium Admin"
+    password: "CHANGE_ME_HASHED_PASSWORD"
+    email: admin@example.com
+    groups:
+      - admins
+      - builders
+
+  builder:
+    displayname: "Gerbarium Builder"
+    password: "CHANGE_ME_HASHED_PASSWORD"
+    email: builder@example.com
+    groups:
+      - builders

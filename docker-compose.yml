@@ -59,6 +59,7 @@ services:
       - REPLACE_ENV_DURING_SYNC=true
     volumes:
       - ./data/hub:/data
+      - ./shared/schematics/hub:/data/config/worldedit/schematics
     networks:
       - mc-network
     ports:
@@ -99,6 +100,7 @@ services:
       - REPLACE_ENV_DURING_SYNC=true
     volumes:
       - ./data/island1:/data
+      - ./shared/schematics/island1:/data/config/worldedit/schematics
     networks:
       - mc-network
     ports:
@@ -139,6 +141,7 @@ services:
       - REPLACE_ENV_DURING_SYNC=true
     volumes:
       - ./data/island2:/data
+      - ./shared/schematics/island2:/data/config/worldedit/schematics
     networks:
       - mc-network
     ports:
@@ -179,6 +182,7 @@ services:
       - REPLACE_ENV_DURING_SYNC=true
     volumes:
       - ./data/island3:/data
+      - ./shared/schematics/island3:/data/config/worldedit/schematics
     networks:
       - mc-network
     ports:
@@ -219,6 +223,7 @@ services:
       - REPLACE_ENV_DURING_SYNC=true
     volumes:
       - ./data/island4:/data
+      - ./shared/schematics/island4:/data/config/worldedit/schematics
     networks:
       - mc-network
     ports:
@@ -262,6 +267,8 @@ services:
     restart: unless-stopped
     environment:
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN}
+      - AUTH_DOMAIN=${AUTH_DOMAIN}
+      - SCHEMATICS_DOMAIN=${SCHEMATICS_DOMAIN}
       - STATUS_DOMAIN=${STATUS_DOMAIN}
       - MAP1_DOMAIN=${MAP1_DOMAIN}
       - MAP2_DOMAIN=${MAP2_DOMAIN}
@@ -287,6 +294,37 @@ services:
       - mc-network
     depends_on:
       - velocity
+      - authelia
+      - schematics-browser
+
+  authelia:
+    image: authelia/authelia:4.38
+    container_name: mc-authelia
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - TZ=${TZ:-Europe/Berlin}
+      - AUTH_DOMAIN=${AUTH_DOMAIN}
+      - SCHEMATICS_DOMAIN=${SCHEMATICS_DOMAIN}
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN}
+      - AUTHELIA_JWT_SECRET=${AUTHELIA_JWT_SECRET}
+      - AUTHELIA_SESSION_SECRET=${AUTHELIA_SESSION_SECRET}
+      - AUTHELIA_STORAGE_ENCRYPTION_KEY=${AUTHELIA_STORAGE_ENCRYPTION_KEY}
+    volumes:
+      - ./authelia:/config
+    networks:
+      - mc-network
+
+  schematics-browser:
+    image: filebrowser/filebrowser:s6
+    container_name: mc-schematics-browser
+    restart: unless-stopped
+    volumes:
+      - ./shared/schematics:/srv
+      - schematics_browser_db:/database
+    networks:
+      - mc-network
 
 networks:
   mc-network:
@@ -297,3 +335,4 @@ volumes:
   caddy_config:
   portainer_data:
   mariadb_data:
+  schematics_browser_db:

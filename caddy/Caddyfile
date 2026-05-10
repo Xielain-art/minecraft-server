@@ -42,6 +42,19 @@
     reverse_proxy island4:8123
 }
 
+{$AUTH_DOMAIN} {
+    reverse_proxy authelia:9091
+}
+
+{$SCHEMATICS_DOMAIN} {
+    forward_auth authelia:9091 {
+        uri /api/authz/forward-auth
+        copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+    }
+
+    reverse_proxy schematics-browser:80
+}
+
 # Path-based fallback for single DuckDNS domain.
 # Use this if subdomains are not configured.
 {$PUBLIC_DOMAIN} {
