@@ -23,3 +23,5 @@ velocity/forwarding.secret
 !velocity/plugins/*.jar
 .env
 *.env
+/authelia/configuration.yml
+/authelia/users_database.yml
