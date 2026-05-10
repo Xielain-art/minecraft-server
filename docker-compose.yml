@@ -57,6 +57,8 @@ services:
       - ./data/hub:/data
     networks:
       - mc-network
+    ports:
+      - "24454:24454/udp"
 
   island1:
     image: itzg/minecraft-server:java17
@@ -91,6 +93,8 @@ services:
       - ./data/island1:/data
     networks:
       - mc-network
+    ports:
+      - "24455:24454/udp"
 
   island2:
     image: itzg/minecraft-server:java17
@@ -125,6 +129,8 @@ services:
       - ./data/island2:/data
     networks:
       - mc-network
+    ports:
+      - "24456:24454/udp"
 
   island3:
     image: itzg/minecraft-server:java17
@@ -159,6 +165,8 @@ services:
       - ./data/island3:/data
     networks:
       - mc-network
+    ports:
+      - "24457:24454/udp"
 
   island4:
     image: itzg/minecraft-server:java17
@@ -193,6 +201,8 @@ services:
       - ./data/island4:/data
     networks:
       - mc-network
+    ports:
+      - "24458:24454/udp"
 
   portainer:
     image: portainer/portainer-ce:latest
