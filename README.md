@@ -197,7 +197,10 @@ find scripts -name "*.sh" -exec chmod +x {} \;
 - `FabricProxy-Lite.toml` не редактируется вручную: он генерируется в `data/<server>/config/` из `.env`
 - `server.properties` не редактируется вручную: он синхронизируется в `data/<server>/server.properties` из `.env`
 
-## MariaDB + LuckPerms (через .env)
+## MariaDB (shared) + LuckPerms (first database)
+
+`mc-mariadb` это общий MariaDB container/server для Minecraft-инфраструктуры.  
+LuckPerms использует только первую database внутри этого сервера.
 
 `docker-compose.yml` использует `.env` для backend Fabric серверов и `mc-mariadb` через `env_file`.
 
@@ -206,10 +209,19 @@ find scripts -name "*.sh" -exec chmod +x {} \;
 ```env
 MARIADB_ROOT_PASSWORD=CHANGE_ME_ROOT_PASSWORD
 MARIADB_DATABASE=luckperms
-MARIADB_USER=luckperms
-MARIADB_PASSWORD=CHANGE_ME_LUCKPERMS_PASSWORD
-CFG_LUCKPERMS_DB_PASSWORD=CHANGE_ME_LUCKPERMS_PASSWORD
+MARIADB_USER=mc_luckperms
+MARIADB_PASSWORD=CHANGE_ME_MC_LUCKPERMS_PASSWORD
+CFG_LUCKPERMS_DB_HOST=mc-mariadb:3306
+CFG_LUCKPERMS_DB_NAME=luckperms
+CFG_LUCKPERMS_DB_USER=mc_luckperms
+CFG_LUCKPERMS_DB_PASSWORD=CHANGE_ME_MC_LUCKPERMS_PASSWORD
 ```
+
+Пояснение:
+- `MARIADB_DATABASE/MARIADB_USER/MARIADB_PASSWORD` это официальные bootstrap переменные MariaDB image.
+- Они создают initial database/user только при первом запуске, когда `mariadb_data` пустой.
+- Сейчас автоматически создается только первая база/пользователь для LuckPerms.
+- Будущие базы (`litebans`, `plan`, `coreprotect`, `gerbarium_minecraft`) создавать вручную SQL-командами.
 
 Шаблоны конфигов LuckPerms:
 - Fabric (HOCON): `templates/luckperms/fabric-config.mariadb.example.conf`
@@ -223,13 +235,55 @@ docker ps | grep mc-mariadb
 docker logs mc-mariadb --tail=50
 ```
 
-Проверка, что `3306` не открыт наружу:
+Ожидаемый безопасный вывод:
 
-```bash
-docker ps | grep mc-mariadb
+```text
+127.0.0.1:13306->3306/tcp
 ```
 
-В выводе не должно быть `0.0.0.0:3306->3306/tcp`.
+Небезопасный вывод, которого быть не должно:
+
+```text
+0.0.0.0:3306->3306/tcp
+```
+
+SSH tunnel с локального ПК:
+
+```bash
+ssh -N -L 3307:127.0.0.1:13306 deploy@IP_СЕРВЕРА
+```
+
+Подключение из DBeaver/HeidiSQL/DataGrip:
+- Host: `127.0.0.1`
+- Port: `3307`
+- User: `root`
+- Password: значение `MARIADB_ROOT_PASSWORD` из `.env`
+
+Или:
+- User: `mc_luckperms`
+- Password: значение `MARIADB_PASSWORD` из `.env`
+- Database: `luckperms`
+
+Пример ручного создания future databases/users:
+
+```sql
+CREATE DATABASE litebans CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE plan CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE coreprotect CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE gerbarium_minecraft CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE USER 'mc_litebans'@'%' IDENTIFIED BY 'CHANGE_ME_MC_LITEBANS_PASSWORD';
+CREATE USER 'mc_plan'@'%' IDENTIFIED BY 'CHANGE_ME_MC_PLAN_PASSWORD';
+CREATE USER 'mc_coreprotect'@'%' IDENTIFIED BY 'CHANGE_ME_MC_COREPROTECT_PASSWORD';
+CREATE USER 'mc_gerbarium'@'%' IDENTIFIED BY 'CHANGE_ME_MC_GERBARIUM_PASSWORD';
+
+GRANT ALL PRIVILEGES ON litebans.* TO 'mc_litebans'@'%';
+GRANT ALL PRIVILEGES ON plan.* TO 'mc_plan'@'%';
+GRANT ALL PRIVILEGES ON coreprotect.* TO 'mc_coreprotect'@'%';
+GRANT ALL PRIVILEGES ON gerbarium_minecraft.* TO 'mc_gerbarium'@'%';
+
+FLUSH PRIVILEGES;
+```
 
 Логи:
 

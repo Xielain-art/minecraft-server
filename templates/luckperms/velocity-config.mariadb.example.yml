@@ -5,8 +5,8 @@ storage-method: mariadb
 data:
   address: mc-mariadb:3306
   database: luckperms
-  username: luckperms
-  password: "CHANGE_ME_LUCKPERMS_PASSWORD"
+  username: mc_luckperms
+  password: "CHANGE_ME_MC_LUCKPERMS_PASSWORD"
 
   pool-settings:
     maximum-pool-size: 10
